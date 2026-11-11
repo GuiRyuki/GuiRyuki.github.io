@@ -1,0 +1,108 @@
+<link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;600&family=Silkscreen&family=Instrument+Sans:wght@400;600&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+  .rp * { box-sizing:border-box; }
+  .rp { font-family:"Instrument Sans",system-ui,sans-serif; font-size:13px; line-height:1.5; overflow:hidden; }
+  .px { font-family:"Pixelify Sans",monospace; }
+  .sk { font-family:"Silkscreen",monospace; }
+  .avatar { width:84px; height:84px; flex:none; image-rendering:pixelated; background:
+      repeating-conic-gradient(#c9d3b8 0 25%, #dfe6d1 0 50%) 0 0/12px 12px; border:2px solid #2b2f26; display:flex; align-items:center; justify-content:center; text-align:center; font-family:"IBM Plex Mono",monospace; font-size:9px; color:#4d5544; }
+  .shot { background:repeating-linear-gradient(135deg,#dfe3d6 0 8px,#e9ecdf 8px 16px); display:flex; align-items:center; justify-content:center; color:#6e7564; font-family:"IBM Plex Mono",monospace; font-size:11px; }
+
+  /* SUTIL */
+  .s { background:#f5f3ec; color:#22241f; border:1px solid #d6d2c4; }
+  .s-nav { display:flex; justify-content:space-between; padding:12px 20px; border-bottom:1px solid #d6d2c4; font-size:12px; }
+  .s-hero { display:flex; gap:16px; align-items:flex-end; padding:28px 20px 22px; }
+  .dlg-s { flex:1; background:#fff; border:2px solid #22241f; box-shadow:inset 0 0 0 3px #fff, inset 0 0 0 4px #22241f; padding:14px 16px; position:relative; }
+  .dlg-s p { margin:0; }
+  .dlg-s .more { position:absolute; right:10px; bottom:4px; font-size:10px; }
+  .s-list { padding:0 20px 22px; display:grid; grid-template-columns:1fr 1.2fr; gap:16px; }
+  .s-list ul { list-style:none; margin:0; padding:0; }
+  .s-list li { padding:8px 0 8px 18px; border-bottom:1px solid #d6d2c4; position:relative; font-size:15px; }
+  .s-list li.on::before { content:"▶"; position:absolute; left:0; font-size:11px; top:11px; }
+  .s-list li span { display:block; font-family:"IBM Plex Mono",monospace; font-size:10px; color:#6b6d63; }
+
+  /* IMERSIVO */
+  .i { background:#1d2b23; color:#e8efd8; padding:14px; }
+  .i-screen { background:#9bbc8a; color:#16261b; border:4px solid #0f1a13; padding:14px; }
+  .i-top { display:flex; justify-content:space-between; font-size:11px; margin-bottom:10px; }
+  .i-grid { display:grid; grid-template-columns:1fr 1.25fr; gap:12px; }
+  .box { background:#e6eed6; border:3px solid #16261b; box-shadow:inset 0 0 0 2px #e6eed6, inset 0 0 0 4px #16261b; padding:10px 12px; }
+  .box ul { list-style:none; margin:0; padding:0; }
+  .box li { padding:4px 0 4px 16px; position:relative; }
+  .box li.on::before { content:"▶"; position:absolute; left:0; font-size:10px; top:7px; }
+  .i .shot { background:repeating-linear-gradient(135deg,#bcd2ab 0 8px,#c9dbb9 8px 16px); color:#3d5a3f; height:88px; margin-bottom:8px; border:2px solid #16261b; }
+  .i-dlg { margin-top:12px; }
+  .stat { display:grid; grid-template-columns:60px 1fr; font-size:11px; gap:2px 6px; margin-top:6px; }
+  .bar { height:7px; border:2px solid #16261b; background:linear-gradient(90deg,#3d7a4c var(--v),transparent 0); margin-top:4px; }
+</style>
+
+<h2>Até onde vai o tema de RPG?</h2>
+<p class="subtitle">Os dois usam a mesma ideia: caixa de diálogo, cursor ▶ e o seu avatar em pixel art (o quadriculado é onde ele entra). A diferença é a intensidade.</p>
+
+<div class="cards">
+
+  <div class="card" data-choice="sutil" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:0">
+      <div class="rp s">
+        <div class="s-nav"><b class="px" style="font-size:15px">Guilherme Ryuki</b><span>Projetos · Sobre · Contato · <b>PT</b>/EN</span></div>
+        <div class="s-hero">
+          <div class="avatar">seu avatar<br>pixel art</div>
+          <div class="dlg-s">
+            <p class="px" style="font-size:12px;color:#6b6d63;margin-bottom:4px">GUILHERME</p>
+            <p style="font-size:15px">Olá! Eu sou o Guilherme. Estudo ADS na FECAP e construo interfaces e jogos para a web. Quer ver o que eu já fiz?</p>
+            <span class="more">▼</span>
+          </div>
+        </div>
+        <div class="s-list">
+          <ul>
+            <li class="on">KFKA<span>React · Vite</span></li>
+            <li>Batman: Gotham Knights<span>JS · Canvas 2D</span></li>
+            <li>CasaSabor<span>HTML · CSS</span></li>
+          </ul>
+          <div>
+            <div class="shot" style="height:96px;border:1px solid #d6d2c4">print do KFKA</div>
+            <p style="margin:8px 0 0">Plataforma de acompanhamento escolar.</p>
+            <p style="margin:2px 0 0;font-family:'IBM Plex Mono';font-size:10px;color:#6b6d63">Minha parte: telas de acesso e admin.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>Sutil: um site com sotaque de jogo</h3>
+      <p>O fundo é claro e o texto comum é fácil de ler. O jogo aparece nos detalhes: a apresentação vem numa caixa de diálogo, o cursor ▶ marca o projeto escolhido e o seu nome usa fonte pixelada. Quem não joga vê um site limpo, e quem joga percebe a referência.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="imersivo" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:0">
+      <div class="rp i">
+        <div class="i-screen">
+          <div class="i-top sk"><span>GUILHERME RYUKI</span><span>PT / EN</span></div>
+          <div class="i-grid">
+            <div class="box sk" style="font-size:11px">
+              <ul>
+                <li class="on">KFKA</li>
+                <li>GOTHAM KNIGHTS</li>
+                <li>CASASABOR</li>
+                <li style="margin-top:6px">SOBRE MIM</li>
+                <li>CONTATO</li>
+              </ul>
+            </div>
+            <div class="box">
+              <div class="shot">print do KFKA</div>
+              <b class="px" style="font-size:14px">KFKA</b>
+              <div class="stat sk"><span>REACT</span><div class="bar" style="--v:80%"></div><span>CSS</span><div class="bar" style="--v:65%"></div></div>
+            </div>
+          </div>
+          <div class="box i-dlg px" style="font-size:13px">Plataforma escolar feita em grupo na FECAP. Fiz as telas de acesso e admin. ▼</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>Imersivo: o site é uma tela de jogo</h3>
+      <p>A página inteira imita um portátil antigo: paleta esverdeada, molduras grossas, menu navegável por teclado e textos em fonte pixelada. É bem marcante e memorável, mas exige mais cuidado com a leitura e com o celular.</p>
+    </div>
+  </div>
+
+</div>
+<p class="subtitle" style="margin-top:20px">Existe meio-termo: dá para começar pelo sutil e esconder um "modo jogo" opcional (por exemplo, um botão ou um código secreto) que deixa tudo imersivo.</p>
