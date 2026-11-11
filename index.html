@@ -35,40 +35,48 @@
   </header>
 
   <main id="conteudo" tabindex="-1">
-    <section id="inicio" class="largura apresentacao">
-      <img class="avatar" data-perfil="avatar" src="assets/avatar.svg" width="112" height="112"
-           alt="Avatar em pixel art do Guilherme" data-i18n-attr="alt:avatar.alt">
-      <div class="dialogo">
-        <p class="dialogo-nome" data-perfil="primeiro-nome">Guilherme</p>
-        <p class="dialogo-texto" data-perfil="dialogo">Oi! Eu sou o Guilherme. Aqui estão os projetos que fiz na faculdade.</p>
-        <span class="dialogo-mais" aria-hidden="true">▼</span>
-      </div>
-    </section>
+    <!-- Menu do modo jogo: o js/telas.js monta os itens e só mostra no modo jogo. -->
+    <nav class="nav-jogo" hidden>
+      <ul id="menu-jogo" class="menu-jogo" role="listbox" tabindex="0"
+          aria-label="Seções do site" data-i18n-attr="aria-label:nav.rotulo"></ul>
+    </nav>
 
-    <section id="projetos" class="largura secao" aria-labelledby="titulo-projetos">
-      <h2 id="titulo-projetos" data-i18n="nav.projetos">Projetos</h2>
-      <div class="projetos-grade">
-        <ul id="menu-projetos" class="menu-projetos" aria-labelledby="titulo-projetos"></ul>
-        <section id="painel-projeto" class="painel"></section>
-      </div>
-    </section>
-
-    <section id="sobre" class="largura secao" aria-labelledby="titulo-sobre">
-      <h2 id="titulo-sobre" data-i18n="sobre.titulo">Sobre mim</h2>
-      <div class="ficha">
-        <img class="avatar avatar-menor" data-perfil="avatar" src="assets/avatar.svg" width="64" height="64" alt="">
-        <div>
-          <p class="ficha-nome" data-perfil="nome">Guilherme Ryuki</p>
-          <p class="ficha-formacao" data-perfil="formacao">Estudante de Análise e Desenvolvimento de Sistemas na FECAP</p>
+    <div id="tela" class="tela">
+      <section id="inicio" class="largura apresentacao">
+        <img class="avatar" data-perfil="avatar" src="assets/avatar.svg" width="112" height="112"
+             alt="Avatar em pixel art do Guilherme" data-i18n-attr="alt:avatar.alt">
+        <div class="dialogo">
+          <p class="dialogo-nome" data-perfil="primeiro-nome">Guilherme</p>
+          <p class="dialogo-texto" data-perfil="dialogo">Oi! Eu sou o Guilherme. Aqui estão os projetos que fiz na faculdade.</p>
+          <span class="dialogo-mais" aria-hidden="true">▼</span>
         </div>
-      </div>
-      <p class="sobre-texto" data-perfil="sobre"></p>
-    </section>
+      </section>
 
-    <section id="contato" class="largura secao" aria-labelledby="titulo-contato">
-      <h2 id="titulo-contato" data-i18n="contato.titulo">Contato</h2>
-      <ul class="contatos" data-perfil="contatos"></ul>
-    </section>
+      <section id="projetos" class="largura secao" aria-labelledby="titulo-projetos">
+        <h2 id="titulo-projetos" data-i18n="nav.projetos">Projetos</h2>
+        <div class="projetos-grade">
+          <ul id="menu-projetos" class="menu-projetos" aria-labelledby="titulo-projetos"></ul>
+          <section id="painel-projeto" class="painel"></section>
+        </div>
+      </section>
+
+      <section id="sobre" class="largura secao" aria-labelledby="titulo-sobre">
+        <h2 id="titulo-sobre" data-i18n="sobre.titulo">Sobre mim</h2>
+        <div class="ficha">
+          <img class="avatar avatar-menor" data-perfil="avatar" src="assets/avatar.svg" width="64" height="64" alt="">
+          <div>
+            <p class="ficha-nome" data-perfil="nome">Guilherme Ryuki</p>
+            <p class="ficha-formacao" data-perfil="formacao">Estudante de Análise e Desenvolvimento de Sistemas na FECAP</p>
+          </div>
+        </div>
+        <p class="sobre-texto" data-perfil="sobre"></p>
+      </section>
+
+      <section id="contato" class="largura secao" aria-labelledby="titulo-contato">
+        <h2 id="titulo-contato" data-i18n="contato.titulo">Contato</h2>
+        <ul class="contatos" data-perfil="contatos"></ul>
+      </section>
+    </div>
   </main>
 
   <div id="aviso-tela" class="visualmente-oculto" aria-live="polite"></div>

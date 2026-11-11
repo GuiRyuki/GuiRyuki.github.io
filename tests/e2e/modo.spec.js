@@ -58,7 +58,8 @@ test("persiste", async ({ page }) => {
   await expect(page.locator(html)).toHaveAttribute("data-modo", "jogo");
 
   await page.reload();
-  await expect(page.locator("#painel-projeto h3")).toBeVisible();
+  // No modo jogo a página abre na tela inicial; o painel fica escondido.
+  await expect(page.locator(".dialogo")).toBeVisible();
   await expect(page.locator(html)).toHaveAttribute("data-modo", "jogo");
   await expect(page.locator(botaoModo)).toHaveAttribute("aria-pressed", "true");
   await expect(page.locator(botaoModo)).toHaveText(textos.pt["botao.modoNormal"]);
@@ -147,7 +148,7 @@ test.describe("paleta do jogo", () => {
     expect(PALETA_JOGO).toContain(moldura.borda);
     expect(moldura.largura).toBeGreaterThanOrEqual(4);
 
-    for (const seletor of [".dialogo", "#menu-projetos", "#painel-projeto"]) {
+    for (const seletor of [".dialogo", "#menu-jogo", "#painel-projeto"]) {
       const fundo = await page
         .locator(seletor)
         .evaluate((el) => getComputedStyle(el).backgroundColor);

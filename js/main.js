@@ -16,6 +16,7 @@ import {
   renderizarPerfil,
   validarProjeto,
 } from "./projetos.js";
+import { iniciarTelas } from "./telas.js";
 
 // Projeto com dado faltando fica fora da página e é avisado no console, em
 // vez de aparecer quebrado.
@@ -100,11 +101,43 @@ export function definirModo(modo) {
   document.dispatchEvent(new CustomEvent("modo-mudou", { detail: { modo } }));
 }
 
+const ehProjeto = (id) => projetos.some((projeto) => projeto.id === id);
+
+// Tela única do modo jogo; fica nula no modo sutil.
+let telas = null;
+
+function desligarTelas() {
+  telas?.encerrar();
+  telas = null;
+}
+
+function ligarTelas() {
+  desligarTelas();
+  telas = iniciarTelas({
+    projetos,
+    idioma: () => estado.idioma,
+    aoMostrar(id) {
+      if (ehProjeto(id)) selecionarProjeto(id);
+    },
+  });
+}
+
 // O conteúdo é montado depois que o navegador já tentou rolar até a âncora,
-// então a rolagem é refeita com a página no tamanho final.
+// então a rolagem é refeita com a página no tamanho final. A âncora de um
+// projeto (#kfka) seleciona o projeto e rola até a seção de projetos.
 function rolarAteAncora() {
-  const id = decodeURIComponent(location.hash.slice(1));
-  if (id) document.getElementById(id)?.scrollIntoView();
+  let id = "";
+  try {
+    id = decodeURIComponent(location.hash.slice(1));
+  } catch {
+    return;
+  }
+  if (!id) return;
+  if (ehProjeto(id)) {
+    selecionarProjeto(id);
+    id = "projetos";
+  }
+  document.getElementById(id)?.scrollIntoView();
 }
 
 export function iniciar() {
@@ -125,5 +158,12 @@ export function iniciar() {
     if (botao) selecionarProjeto(botao.dataset.projeto);
   });
 
-  rolarAteAncora();
+  document.addEventListener("modo-mudou", (evento) => {
+    if (evento.detail.modo === "jogo") ligarTelas();
+    else desligarTelas();
+  });
+
+  // No modo jogo salvo, a tela única cuida da âncora; no sutil, a página rola.
+  if (estado.modo === "jogo") ligarTelas();
+  else rolarAteAncora();
 }
