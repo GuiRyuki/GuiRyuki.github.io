@@ -34,3 +34,15 @@ npx playwright install chromium firefox webkit
 Os projetos ficam em `data/projetos.js`. Para incluir um novo, adicione um item
 à lista desse arquivo, seguindo o formato dos que já existem. A ordem da lista
 é a ordem em que os projetos aparecem no site.
+
+## Fontes
+
+As fontes ficam em `assets/fontes/` e são servidas pelo próprio site. São os
+arquivos do Google Fonts no recorte latino, sem alteração, todos sob a licença
+SIL Open Font License 1.1. O aviso de direitos autorais e o texto da licença
+de cada família estão ao lado dos arquivos:
+
+- Pixelify Sans: `assets/fontes/OFL-pixelify-sans.txt`
+- Instrument Sans: `assets/fontes/OFL-instrument-sans.txt`
+- IBM Plex Mono: `assets/fontes/OFL-ibm-plex-mono.txt` (nome reservado: "Plex")
+- Silkscreen: `assets/fontes/OFL-silkscreen.txt`

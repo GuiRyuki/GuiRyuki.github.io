@@ -1,7 +1,8 @@
 /* Base comum aos dois modos: variáveis, reset, tipografia e utilitários.
    As cores padrão são as do modo sutil; o modo jogo troca as variáveis. */
 
-/* Fontes auto-hospedadas (licença SIL OFL), no recorte latino do Google
+/* Fontes auto-hospedadas (licença SIL OFL 1.1; os avisos e o texto da licença
+   estão em assets/fontes/OFL-*.txt), no recorte latino do Google
    Fonts, que cobre português e inglês. Pixelify Sans e Instrument Sans são
    variáveis: um arquivo só atende os pesos 400 a 600. */
 
