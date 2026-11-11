@@ -1,6 +1,43 @@
 /* Base comum aos dois modos: variáveis, reset, tipografia e utilitários.
    As cores padrão são as do modo sutil; o modo jogo troca as variáveis. */
 
+/* Fontes auto-hospedadas (licença SIL OFL), no recorte latino do Google
+   Fonts, que cobre português e inglês. Pixelify Sans e Instrument Sans são
+   variáveis: um arquivo só atende os pesos 400 a 600. */
+
+@font-face {
+  font-family: "Pixelify Sans";
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url("../assets/fontes/pixelify-sans.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Instrument Sans";
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url("../assets/fontes/instrument-sans.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "IBM Plex Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../assets/fontes/ibm-plex-mono.woff2") format("woff2");
+}
+
+/* Só o modo jogo usa a Silkscreen, então ela não é pré-carregada. */
+@font-face {
+  font-family: "Silkscreen";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../assets/fontes/silkscreen.woff2") format("woff2");
+}
+
 :root {
   --fundo: #f5f3ec;
   --papel: #ffffff;
@@ -35,6 +72,13 @@ body {
   font-family: var(--fonte-texto);
   font-size: 1.0625rem;
   line-height: 1.55;
+}
+
+/* Até o JavaScript montar a página (ele marca o modo no <html>), o conteúdo
+   fica invisível mas ocupando o lugar. Assim, numa conexão lenta, o texto
+   provisório do HTML não aparece para depois ser trocado e empurrar tudo. */
+html:not([data-modo]) #tela {
+  visibility: hidden;
 }
 
 h1,

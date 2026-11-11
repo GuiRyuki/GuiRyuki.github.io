@@ -20,6 +20,7 @@ Depois, abra http://localhost:5173 no navegador.
 ```
 npm test            # testes unitários (node --test)
 npm run test:e2e    # testes de ponta a ponta (Playwright)
+node scripts/lighthouse.mjs   # Lighthouse nos dois modos (notas 90+ e LCP até 2s)
 ```
 
 Na primeira vez, instale os navegadores do Playwright:
