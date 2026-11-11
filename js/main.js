@@ -2,8 +2,14 @@
 
 import { projetos as todosOsProjetos } from "../data/projetos.js";
 import { perfil } from "../data/perfil.js";
-import { aplicarTextos, detectarIdioma } from "./i18n.js";
-import { CHAVE_IDIOMA, lerPreferencia, salvarPreferencia } from "./preferencias.js";
+import { aplicarTextos, detectarIdioma, traduzir } from "./i18n.js";
+import { aplicarModo } from "./modo.js";
+import {
+  CHAVE_IDIOMA,
+  CHAVE_MODO,
+  lerPreferencia,
+  salvarPreferencia,
+} from "./preferencias.js";
 import {
   renderizarMenu,
   renderizarPainel,
@@ -62,6 +68,38 @@ export function definirIdioma(idioma) {
   rerenderizar();
 }
 
+const MODOS = ["sutil", "jogo"];
+
+// Só "sutil" e "jogo" valem; qualquer outro valor salvo abre no modo sutil.
+function modoInicial() {
+  const salvo = lerPreferencia(CHAVE_MODO, "sutil");
+  return MODOS.includes(salvo) ? salvo : "sutil";
+}
+
+// O botão é um interruptor e o rótulo diz para onde ele leva. A chave do
+// texto fica no data-i18n, então a troca de idioma mantém o rótulo certo.
+function atualizarBotaoModo() {
+  const botao = document.getElementById("botao-modo");
+  const noJogo = estado.modo === "jogo";
+  botao.dataset.i18n = noJogo ? "botao.modoNormal" : "botao.modoJogo";
+  botao.textContent = traduzir(botao.dataset.i18n, estado.idioma);
+  botao.setAttribute("aria-pressed", String(noJogo));
+}
+
+// Mostra o modo no <html> e no botão, sem salvar nem avisar ninguém.
+function mostrarModo(modo, opcoes) {
+  estado.modo = modo;
+  aplicarModo(modo, opcoes);
+  atualizarBotaoModo();
+}
+
+export function definirModo(modo) {
+  if (!MODOS.includes(modo)) return;
+  mostrarModo(modo, { animar: true });
+  salvarPreferencia(CHAVE_MODO, modo);
+  document.dispatchEvent(new CustomEvent("modo-mudou", { detail: { modo } }));
+}
+
 // O conteúdo é montado depois que o navegador já tentou rolar até a âncora,
 // então a rolagem é refeita com a página no tamanho final.
 function rolarAteAncora() {
@@ -71,7 +109,12 @@ function rolarAteAncora() {
 
 export function iniciar() {
   estado.idioma = idiomaInicial();
+  mostrarModo(modoInicial());
   rerenderizar();
+
+  document.getElementById("botao-modo").addEventListener("click", () => {
+    definirModo(estado.modo === "jogo" ? "sutil" : "jogo");
+  });
 
   document.getElementById("botao-idioma").addEventListener("click", () => {
     definirIdioma(estado.idioma === "pt" ? "en" : "pt");

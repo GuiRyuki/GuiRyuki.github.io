@@ -149,24 +149,27 @@ test("estilos do sutil só valem fora do modo jogo", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/");
   await expect(page.locator(`${painel} h3`)).toBeVisible();
+  // Valores que só o sutil.css define; o modo jogo monta os próprios.
   const medir = () =>
     page.evaluate(() => ({
-      sombra: getComputedStyle(document.querySelector(".dialogo")).boxShadow,
-      colunas: getComputedStyle(document.querySelector(".projetos-grade"))
-        .gridTemplateColumns.split(" ").length,
-      bordaTopo: getComputedStyle(document.getElementById("topo")).borderBottomStyle,
+      papel: getComputedStyle(document.querySelector(".dialogo")).backgroundColor,
+      menu: getComputedStyle(document.getElementById("menu-projetos")).position,
+      bordaTopo: getComputedStyle(document.getElementById("topo")).borderBottomWidth,
+      bordaTitulo: getComputedStyle(document.querySelector(".secao > h2")).borderTopStyle,
     }));
 
   const antes = await medir();
-  expect(antes.sombra).not.toBe("none");
-  expect(antes.colunas).toBe(2);
-  expect(antes.bordaTopo).toBe("solid");
+  expect(antes.papel).toBe("rgb(255, 255, 255)");
+  expect(antes.menu).toBe("sticky");
+  expect(antes.bordaTopo).toBe("1px");
+  expect(antes.bordaTitulo).toBe("solid");
 
   await page.evaluate(() => (document.documentElement.dataset.modo = "jogo"));
   const noJogo = await medir();
-  expect(noJogo.sombra).toBe("none");
-  expect(noJogo.colunas).toBe(1);
-  expect(noJogo.bordaTopo).toBe("none");
+  expect(noJogo.papel).not.toBe(antes.papel);
+  expect(noJogo.menu).toBe("static");
+  expect(noJogo.bordaTopo).not.toBe("1px");
+  expect(noJogo.bordaTitulo).toBe("none");
 
   await page.evaluate(() => delete document.documentElement.dataset.modo);
   expect(await medir()).toEqual(antes);
