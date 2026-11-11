@@ -3,6 +3,7 @@
 import { projetos as todosOsProjetos } from "../data/projetos.js";
 import { perfil } from "../data/perfil.js";
 import { aplicarTextos, detectarIdioma } from "./i18n.js";
+import { CHAVE_IDIOMA, lerPreferencia, salvarPreferencia } from "./preferencias.js";
 import {
   renderizarMenu,
   renderizarPainel,
@@ -43,6 +44,24 @@ function selecionarProjeto(id) {
   rerenderizar();
 }
 
+const IDIOMAS = ["pt", "en"];
+
+// Vale a preferência salva; sem ela (ou com um valor que o site não conhece),
+// vale o idioma do navegador.
+function idiomaInicial() {
+  const salvo = lerPreferencia(CHAVE_IDIOMA, null);
+  return IDIOMAS.includes(salvo) ? salvo : detectarIdioma(navigator.languages);
+}
+
+// Troca o idioma sem recarregar a página. O projeto ativo fica no estado,
+// então continua o mesmo depois de redesenhar.
+export function definirIdioma(idioma) {
+  if (!IDIOMAS.includes(idioma)) return;
+  estado.idioma = idioma;
+  salvarPreferencia(CHAVE_IDIOMA, idioma);
+  rerenderizar();
+}
+
 // O conteúdo é montado depois que o navegador já tentou rolar até a âncora,
 // então a rolagem é refeita com a página no tamanho final.
 function rolarAteAncora() {
@@ -51,8 +70,12 @@ function rolarAteAncora() {
 }
 
 export function iniciar() {
-  estado.idioma = detectarIdioma(navigator.languages);
+  estado.idioma = idiomaInicial();
   rerenderizar();
+
+  document.getElementById("botao-idioma").addEventListener("click", () => {
+    definirIdioma(estado.idioma === "pt" ? "en" : "pt");
+  });
 
   document.getElementById("menu-projetos").addEventListener("click", (evento) => {
     const botao = evento.target.closest("button[data-projeto]");
