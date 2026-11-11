@@ -43,6 +43,8 @@ export function rerenderizar() {
   const ativo = projetos.find((projeto) => projeto.id === estado.projetoAtivo);
   renderizarMenu(menu, projetos, estado.idioma, estado.projetoAtivo);
   if (ativo) renderizarPainel(painel, ativo, estado.idioma);
+  // O painel remontado numa tela escondida do modo jogo traz um vídeo novo.
+  telas?.pausarVideosEscondidos();
 }
 
 function selecionarProjeto(id) {
@@ -77,14 +79,14 @@ function modoInicial() {
   return MODOS.includes(salvo) ? salvo : "sutil";
 }
 
-// O botão é um interruptor e o rótulo diz para onde ele leva. A chave do
+// O rótulo do botão diz para onde ele leva, e por isso não há aria-pressed:
+// com os dois, o leitor de tela diria "Modo normal, pressionado". A chave do
 // texto fica no data-i18n, então a troca de idioma mantém o rótulo certo.
 function atualizarBotaoModo() {
   const botao = document.getElementById("botao-modo");
   const noJogo = estado.modo === "jogo";
   botao.dataset.i18n = noJogo ? "botao.modoNormal" : "botao.modoJogo";
   botao.textContent = traduzir(botao.dataset.i18n, estado.idioma);
-  botao.setAttribute("aria-pressed", String(noJogo));
 }
 
 // Mostra o modo no <html> e no botão, sem salvar nem avisar ninguém.
@@ -116,6 +118,7 @@ function ligarTelas() {
   telas = iniciarTelas({
     projetos,
     idioma: () => estado.idioma,
+    projetoAtivo: () => estado.projetoAtivo,
     aoMostrar(id) {
       if (ehProjeto(id)) selecionarProjeto(id);
     },

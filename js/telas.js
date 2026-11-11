@@ -30,14 +30,17 @@ export function idsDeTela(projetos) {
 }
 
 // "#sobre" -> "sobre". Âncora vazia, malformada ou desconhecida cai na tela
-// inicial, para nunca sobrar uma tela vazia.
-export function telaDoHash(hash, ids) {
+// inicial, para nunca sobrar uma tela vazia. `apelidos` leva uma âncora que
+// não é tela até a tela certa: { projetos: "kfka" } faz "#projetos" abrir o
+// KFKA.
+export function telaDoHash(hash, ids, apelidos = {}) {
   let id = String(hash ?? "").replace(/^#/, "");
   try {
     id = decodeURIComponent(id);
   } catch {
     return TELA_INICIAL;
   }
+  if (Object.hasOwn(apelidos, id)) id = apelidos[id];
   return ids.includes(id) ? id : TELA_INICIAL;
 }
 
@@ -48,14 +51,19 @@ export function proximoIndice(atual, delta, total) {
   return (atual + delta + total) % total;
 }
 
+function movimentoReduzido() {
+  return globalThis.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
+}
+
 function idiomaDaPagina() {
   return document.documentElement.lang.toLowerCase().startsWith("pt") ? "pt" : "en";
 }
 
 // Liga a tela única. Chamar ao entrar no modo jogo e usar `encerrar()` ao sair.
 // `aoMostrar(id)` roda antes de a tela aparecer: é a hora de quem chama
-// desenhar o projeto escolhido no #painel-projeto.
-export function iniciarTelas({ projetos, aoMostrar, idioma = idiomaDaPagina }) {
+// desenhar o projeto escolhido no #painel-projeto. `projetoAtivo()` diz qual
+// projeto a âncora "#projetos" abre; sem ele, vale o primeiro.
+export function iniciarTelas({ projetos, aoMostrar, projetoAtivo, idioma = idiomaDaPagina }) {
   const ids = idsDeTela(projetos);
   const idsDoMenu = ids.slice(1);
   const projetoPorId = new Map(projetos.map((projeto) => [projeto.id, projeto]));
@@ -67,6 +75,8 @@ export function iniciarTelas({ projetos, aoMostrar, idioma = idiomaDaPagina }) {
 
   const escondidas = new Set();
   const comTabindex = new Set();
+  // Vídeos que a troca de tela pausou, para voltarem a tocar com a tela deles.
+  const pausados = new WeakSet();
   let atual = TELA_INICIAL;
   let cursor = -1;
 
@@ -117,6 +127,34 @@ export function iniciarTelas({ projetos, aoMostrar, idioma = idiomaDaPagina }) {
     }
   }
 
+  // "#projetos" é uma seção do modo sutil (link do topo ou endereço
+  // compartilhado). Aqui ela leva ao projeto que está aberto.
+  function telaDaAncora() {
+    return telaDoHash(location.hash, ids, {
+      projetos: projetoAtivo?.() ?? projetos[0]?.id,
+    });
+  }
+
+  // Vídeo em tela escondida não fica tocando. Entra na lista para voltar
+  // depois só o que estava tocando ou ia começar sozinho; o que a pessoa
+  // pausou continua pausado.
+  function pausarVideosEscondidos() {
+    for (const secao of escondidas) {
+      for (const video of secao.querySelectorAll("video")) {
+        const iaComecar = video.autoplay && video.played.length === 0;
+        if (!video.paused || iaComecar) pausados.add(video);
+        video.pause();
+      }
+    }
+  }
+
+  function retomarVideos(secao) {
+    for (const video of secao.querySelectorAll("video")) {
+      if (!pausados.delete(video) || movimentoReduzido()) continue;
+      video.play()?.catch(() => {});
+    }
+  }
+
   function mostrar(id, { focar = true } = {}) {
     atual = ids.includes(id) ? id : TELA_INICIAL;
     aoMostrar?.(atual);
@@ -127,17 +165,21 @@ export function iniciarTelas({ projetos, aoMostrar, idioma = idiomaDaPagina }) {
       if (!secao) continue;
       if (idDaSecao === secaoVisivel) {
         if (escondidas.delete(secao)) secao.hidden = false;
+        retomarVideos(secao);
       } else if (!secao.hidden) {
         secao.hidden = true;
         escondidas.add(secao);
       }
     }
+    pausarVideosEscondidos();
 
     for (const item of itens) {
       item.setAttribute("aria-selected", String(item.dataset.tela === atual));
     }
     moverCursor(idsDoMenu.indexOf(atual));
     area.scrollTop = 0;
+    // Em janela baixa quem rola é a página, não a área de conteúdo.
+    window.scrollTo(0, 0);
 
     if (location.hash !== `#${atual}`) {
       history.replaceState(history.state, "", `#${atual}`);
@@ -155,6 +197,13 @@ export function iniciarTelas({ projetos, aoMostrar, idioma = idiomaDaPagina }) {
           comTabindex.add(titulo);
         }
         titulo.focus({ preventScroll: true });
+        // Em janela baixa, o topo e o menu podem ocupar a janela inteira e
+        // deixar a tela escolhida abaixo da dobra: a página rola até o título.
+        const raiz = document.documentElement;
+        const caixa = titulo.getBoundingClientRect();
+        if (raiz.scrollHeight > raiz.clientHeight && caixa.bottom > raiz.clientHeight) {
+          titulo.scrollIntoView();
+        }
       }
     }
   }
@@ -190,7 +239,7 @@ export function iniciarTelas({ projetos, aoMostrar, idioma = idiomaDaPagina }) {
 
   // Links como o do nome no topo (#inicio) e o botão voltar do navegador.
   function aoMudarHash() {
-    mostrar(telaDoHash(location.hash, ids));
+    mostrar(telaDaAncora());
   }
 
   menu.addEventListener("keydown", aoTeclar);
@@ -199,7 +248,7 @@ export function iniciarTelas({ projetos, aoMostrar, idioma = idiomaDaPagina }) {
   window.addEventListener("hashchange", aoMudarHash);
 
   // A primeira tela vem da âncora e não rouba o foco de quem acabou de chegar.
-  mostrar(telaDoHash(location.hash, ids), { focar: false });
+  mostrar(telaDaAncora(), { focar: false });
 
   // A fonte do menu chega depois e alarga os itens; a faixa é ajustada de novo.
   let encerrado = false;
@@ -214,7 +263,10 @@ export function iniciarTelas({ projetos, aoMostrar, idioma = idiomaDaPagina }) {
     menu.removeEventListener("focusout", aoSairDoMenu);
     window.removeEventListener("hashchange", aoMudarHash);
 
-    for (const secao of escondidas) secao.hidden = false;
+    for (const secao of escondidas) {
+      secao.hidden = false;
+      retomarVideos(secao);
+    }
     escondidas.clear();
     for (const titulo of comTabindex) titulo.removeAttribute("tabindex");
     comTabindex.clear();
@@ -240,5 +292,5 @@ export function iniciarTelas({ projetos, aoMostrar, idioma = idiomaDaPagina }) {
     requestAnimationFrame(rolar);
   }
 
-  return { mostrar, telaAtual: () => atual, encerrar };
+  return { mostrar, telaAtual: () => atual, pausarVideosEscondidos, encerrar };
 }

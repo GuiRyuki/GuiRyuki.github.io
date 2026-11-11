@@ -325,9 +325,24 @@ html[data-modo="jogo"] :is(.secao > h2, .painel-titulo, .dialogo-nome):focus-vis
 
 /* Projetos: o menu ▶ já lista os projetos, então sobra só o painel. */
 
-html[data-modo="jogo"] #titulo-projetos,
 html[data-modo="jogo"] #menu-projetos {
   display: none;
+}
+
+/* O título some da vista mas continua na árvore de acessibilidade, para a
+   ordem h1, h2, h3 não pular um nível (mesma técnica do .visualmente-oculto). */
+html[data-modo="jogo"] #projetos {
+  position: relative;
+}
+
+html[data-modo="jogo"] #titulo-projetos {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 html[data-modo="jogo"] .painel {
@@ -593,5 +608,37 @@ html[data-modo="jogo"] .contato-rotulo {
     grid-column: 1;
     grid-row: 3 / -1;
     margin-top: 18px;
+  }
+}
+
+/* Janela baixa (celular deitado, ou zoom de 400% num monitor comum): a área
+   de conteúdo ficaria com poucos pixels de altura. A moldura deixa de ter o
+   tamanho da janela, cresce com o conteúdo, e quem rola é a página inteira. */
+@media (max-height: 480px) {
+  html[data-modo="jogo"] {
+    height: auto;
+    overflow: visible;
+  }
+
+  html[data-modo="jogo"] body {
+    height: auto;
+    min-height: calc(100vh - 2 * var(--folga-tela));
+    min-height: calc(100dvh - 2 * var(--folga-tela));
+    overflow: visible;
+  }
+
+  html[data-modo="jogo"] .tela {
+    overflow: visible;
+  }
+}
+
+/* Com o menu em coluna, ele acompanha a rolagem da página. */
+@media (max-height: 480px) and (min-width: 700px) {
+  html[data-modo="jogo"] .nav-jogo {
+    position: sticky;
+    top: 0;
+    align-self: start;
+    max-height: 100vh;
+    max-height: 100dvh;
   }
 }

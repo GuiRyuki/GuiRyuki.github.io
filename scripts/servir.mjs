@@ -124,6 +124,8 @@ const servidor = createServer(async (pedido, resposta) => {
   }
 });
 
-servidor.listen(PORTA, () => {
-  console.log(`Servindo ${RAIZ} em http://localhost:${PORTA}`);
+// Só aceita conexões da própria máquina: a raiz tem pastas (.git, por
+// exemplo) que não devem ficar à vista na rede local.
+servidor.listen(PORTA, "127.0.0.1", () => {
+  console.log(`Servindo ${RAIZ} em http://127.0.0.1:${PORTA}`);
 });

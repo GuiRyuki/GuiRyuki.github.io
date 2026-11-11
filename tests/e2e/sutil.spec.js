@@ -247,3 +247,33 @@ test("prints e poster dos projetos carregam de verdade", async ({ page }) => {
   const poster = await page.request.get("/assets/projetos/gotham-knights-1.webp");
   expect(poster.ok()).toBe(true);
 });
+
+test.describe("sem JavaScript", () => {
+  test.use({ javaScriptEnabled: false });
+
+  test("o conteúdo do HTML aparece e os contatos vêm como links comuns", async ({ page }) => {
+    await page.goto("/");
+    await expect(page.locator("#tela")).toBeVisible();
+    await expect(page.locator("#titulo-sobre")).toBeVisible();
+
+    const aviso = page.locator(".sem-js");
+    await expect(aviso).toBeVisible();
+    // Um parágrafo em português e outro em inglês, cada um com os três contatos.
+    for (const paragrafo of [aviso.locator("p:not([lang])"), aviso.locator('p[lang="en"]')]) {
+      await expect(paragrafo).toBeVisible();
+      for (const href of [
+        "mailto:ryuki.gui@gmail.com",
+        "https://github.com/GuiRyuki",
+        "https://www.linkedin.com/in/guiryuki",
+      ]) {
+        await expect(paragrafo.locator(`a[href="${href}"]`)).toBeVisible();
+      }
+    }
+  });
+});
+
+test("com JavaScript, o aviso de página sem JavaScript não aparece", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator(`${painel} h3`)).toBeVisible();
+  await expect(page.locator(".sem-js")).toHaveCount(0);
+});

@@ -263,3 +263,147 @@ test("âncora de projeto no modo sutil seleciona o projeto", async ({ page }) =>
   await expect(page.locator("#painel-projeto h3")).toHaveText("Batman: Gotham Knights");
   await expect(page.locator("#painel-projeto h3")).toBeInViewport();
 });
+
+test("âncora #projetos com o modo jogo salvo abre o primeiro projeto", async ({ page }) => {
+  await abrirNoJogo(page, "/#projetos");
+  expect(await telasVisiveis(page)).toEqual(["#painel-projeto"]);
+  await expect(page.locator("#painel-projeto h3")).toHaveText("KFKA");
+  await expect(item(page, "kfka")).toHaveAttribute("aria-selected", "true");
+  await expect(page).toHaveURL(/#kfka$/);
+});
+
+test("no sutil, ir a Projetos e entrar no jogo abre o projeto ativo", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator("#painel-projeto h3")).toBeVisible();
+  await page.locator('#menu-projetos [data-projeto="casasabor"]').click();
+  await expect(page.locator("#painel-projeto h3")).toHaveText("CasaSabor");
+  await page.locator('.topo-nav a[href="#projetos"]').click();
+  await expect(page).toHaveURL(/#projetos$/);
+
+  await page.locator("#botao-modo").click();
+  await expect(page.locator("html")).toHaveAttribute("data-modo", "jogo");
+  expect(await telasVisiveis(page)).toEqual(["#painel-projeto"]);
+  await expect(page.locator("#painel-projeto h3")).toHaveText("CasaSabor");
+  await expect(item(page, "casasabor")).toHaveAttribute("aria-selected", "true");
+  await expect(page.locator('#menu-jogo [aria-selected="true"]')).toHaveCount(1);
+  await expect(page).toHaveURL(/#casasabor$/);
+});
+
+test("o título Projetos continua na árvore de acessibilidade no modo jogo", async ({ page }) => {
+  await abrirNoJogo(page, "/#kfka");
+  // Fica fora da vista, mas mantém a ordem h1, h2, h3 para o leitor de tela.
+  await expect(
+    page.getByRole("heading", { level: 2, name: textos.pt["nav.projetos"] }),
+  ).toHaveCount(1);
+  const caixa = await page.locator("#titulo-projetos").boundingBox();
+  expect(caixa.width).toBeLessThanOrEqual(1);
+  expect(caixa.height).toBeLessThanOrEqual(1);
+  await expect(page.locator("#menu-projetos")).toBeHidden();
+  await paginaNaoRola(page);
+});
+
+// Janela baixa (celular deitado, ou zoom de 400% num monitor de 1280x1024):
+// a moldura deixa de ter a altura da janela e a página inteira passa a rolar.
+for (const tamanho of [
+  { width: 320, height: 256 },
+  { width: 740, height: 360 },
+]) {
+  test(`janela baixa ${tamanho.width}x${tamanho.height}: dá para rolar até o fim de cada tela`, async ({
+    page,
+  }) => {
+    await page.setViewportSize(tamanho);
+    await abrirNoJogo(page, "/", "en");
+
+    const semRolagemHorizontal = async () => {
+      const medidas = await page.evaluate(() => ({
+        total: document.scrollingElement.scrollWidth,
+        janela: document.documentElement.clientWidth,
+      }));
+      expect(medidas.total).toBeLessThanOrEqual(medidas.janela);
+    };
+    await semRolagemHorizontal();
+
+    const fins = {
+      kfka: "#painel-projeto > :last-child",
+      contato: "#contato .contatos > li:last-child",
+    };
+    for (const [id, seletor] of Object.entries(fins)) {
+      await item(page, id).scrollIntoViewIfNeeded();
+      await expect(item(page, id)).toBeInViewport({ ratio: 1 });
+      await item(page, id).click();
+      await expect(item(page, id)).toHaveAttribute("aria-selected", "true");
+
+      // Trocar de tela volta ao alto da página, com o título à vista.
+      const titulo = id === "kfka" ? "#painel-projeto h3" : "#titulo-contato";
+      await expect(page.locator(titulo)).toBeInViewport({ ratio: 1 });
+
+      const ultimo = page.locator(seletor);
+      await ultimo.scrollIntoViewIfNeeded();
+      await expect(ultimo, id).toBeInViewport({ ratio: 1 });
+      await semRolagemHorizontal();
+    }
+
+    // Os botões do topo continuam alcançáveis.
+    await page.locator("#botao-modo").scrollIntoViewIfNeeded();
+    await expect(page.locator("#botao-modo")).toBeInViewport({ ratio: 1 });
+  });
+}
+
+test.describe("vídeo fora da tela", () => {
+  test.use({ reducedMotion: "no-preference" });
+
+  test("o vídeo pausa quando a tela do projeto some e volta a tocar com ela", async ({
+    page,
+    browserName,
+  }) => {
+    test.skip(browserName !== "chromium", "a reprodução é conferida só no Chromium");
+    await abrirNoJogo(page);
+    await item(page, "gotham-knights").click();
+    const video = page.locator("#painel-projeto .midia video");
+    await expect
+      .poll(() => video.evaluate((el) => !el.paused && el.currentTime > 0), { timeout: 10000 })
+      .toBe(true);
+
+    await item(page, "sobre").click();
+    expect(await telasVisiveis(page)).toEqual(["#sobre"]);
+    expect(await video.evaluate((el) => el.paused)).toBe(true);
+
+    // Trocar o idioma remonta o painel escondido; o vídeo novo não pode tocar.
+    await page.locator("#botao-idioma").click();
+    await expect(page.locator("html")).toHaveAttribute("lang", "en");
+    await page.waitForTimeout(500);
+    expect(await video.evaluate((el) => el.paused && el.currentTime === 0)).toBe(true);
+
+    // De volta à tela do projeto, o vídeo toca de novo.
+    await item(page, "gotham-knights").click();
+    await expect
+      .poll(() => video.evaluate((el) => !el.paused && el.currentTime > 0), { timeout: 10000 })
+      .toBe(true);
+
+    // Outro projeto: o painel é remontado sem vídeo e o antigo fica parado.
+    const anterior = await video.elementHandle();
+    await item(page, "kfka").click();
+    await expect(page.locator("#painel-projeto h3")).toHaveText("KFKA");
+    expect(await anterior.evaluate((el) => el.paused)).toBe(true);
+  });
+
+  test("com movimento reduzido, o vídeo pausado ao sair da tela não volta sozinho", async ({
+    page,
+    browserName,
+  }) => {
+    test.skip(browserName !== "chromium", "a reprodução é conferida só no Chromium");
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await abrirNoJogo(page);
+    await item(page, "gotham-knights").click();
+    const video = page.locator("#painel-projeto .midia video");
+    await video.evaluate((el) => el.play());
+    await expect.poll(() => video.evaluate((el) => !el.paused)).toBe(true);
+
+    await item(page, "sobre").click();
+    await expect(video).toHaveJSProperty("paused", true);
+    await item(page, "gotham-knights").click();
+    await expect(page.locator("#painel-projeto h3")).toBeFocused();
+    await page.waitForTimeout(300);
+    await expect(video).toHaveJSProperty("paused", true);
+  });
+});

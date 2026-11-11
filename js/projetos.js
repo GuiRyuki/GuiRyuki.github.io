@@ -159,6 +159,11 @@ function criarMidia(midia, idioma) {
   return imagem;
 }
 
+// O vídeo que sai da página para de tocar antes de ser trocado.
+function pausarVideos(raiz) {
+  for (const video of raiz.querySelectorAll("video")) video.pause();
+}
+
 function criarGaleria(projeto, idioma) {
   const midias = midiasDe(projeto);
   const galeria = criar("div", "galeria");
@@ -181,6 +186,7 @@ function criarGaleria(projeto, idioma) {
     );
     if (indice === 0) botao.setAttribute("aria-current", "true");
     botao.addEventListener("click", () => {
+      pausarVideos(moldura);
       moldura.replaceChildren(criarMidia(midia, idioma));
       for (const outro of controles.children) outro.removeAttribute("aria-current");
       botao.setAttribute("aria-current", "true");
@@ -241,6 +247,7 @@ export function renderizarPainel(painel, projeto, idioma) {
     partes.push(paragrafo);
   }
 
+  pausarVideos(painel);
   painel.replaceChildren(...partes);
 }
 

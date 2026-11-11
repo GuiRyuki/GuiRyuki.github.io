@@ -13,7 +13,7 @@ npm install
 npm run servir
 ```
 
-Depois, abra http://localhost:5173 no navegador.
+Depois, abra http://127.0.0.1:5173 no navegador.
 
 ## Testes
 

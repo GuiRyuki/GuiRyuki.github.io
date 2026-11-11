@@ -25,6 +25,22 @@ test("telaDoHash cai na tela inicial com âncora vazia ou desconhecida", () => {
   assert.equal(telaDoHash("#%E0%A4%A", ids), "inicio");
 });
 
+test("telaDoHash troca o apelido pela tela para onde ele aponta", () => {
+  // "#projetos" é uma seção do modo sutil; no jogo ela vira a tela de um projeto.
+  assert.equal(telaDoHash("#projetos", ids, { projetos: "gotham-knights" }), "gotham-knights");
+  assert.equal(telaDoHash("projetos", ids, { projetos: "kfka" }), "kfka");
+  // O apelido não atrapalha as âncoras que já são telas.
+  assert.equal(telaDoHash("#sobre", ids, { projetos: "kfka" }), "sobre");
+});
+
+test("telaDoHash cai na tela inicial quando o apelido não leva a uma tela", () => {
+  assert.equal(telaDoHash("#projetos", ids), "inicio");
+  assert.equal(telaDoHash("#projetos", ids, { projetos: undefined }), "inicio");
+  assert.equal(telaDoHash("#projetos", ids, { projetos: "nao-existe" }), "inicio");
+  // Nomes herdados de Object.prototype não viram apelido.
+  assert.equal(telaDoHash("#constructor", ids, {}), "inicio");
+});
+
 test("proximoIndice dá a volta nas pontas", () => {
   assert.equal(proximoIndice(0, -1, 5), 4);
   assert.equal(proximoIndice(4, 1, 5), 0);

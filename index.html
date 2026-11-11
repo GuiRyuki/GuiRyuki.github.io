@@ -14,6 +14,15 @@
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/sutil.css">
   <link rel="stylesheet" href="css/jogo.css">
+  <!-- Sem JavaScript ninguém marca o modo no <html>: o conteúdo do HTML
+       aparece assim mesmo, com os contatos em links comuns. -->
+  <noscript>
+    <style>
+      html:not([data-modo]) #tela { visibility: visible; }
+      .sem-js { padding-block: 24px 0; }
+      .sem-js p + p { margin-top: 8px; }
+    </style>
+  </noscript>
 </head>
 <body>
   <a class="pular" href="#conteudo" data-i18n="pular.conteudo">Pular para o conteúdo</a>
@@ -30,8 +39,7 @@
         <button type="button" id="botao-idioma" class="botao" data-i18n="botao.idioma"
                 aria-label="English: mudar o idioma do site para inglês"
                 data-i18n-attr="aria-label:botao.idiomaRotulo">English</button>
-        <button type="button" id="botao-modo" class="botao" data-i18n="botao.modoJogo"
-                aria-pressed="false">▶ Modo jogo</button>
+        <button type="button" id="botao-modo" class="botao" data-i18n="botao.modoJogo">▶ Modo jogo</button>
       </div>
     </div>
   </header>
@@ -42,6 +50,24 @@
       <ul id="menu-jogo" class="menu-jogo" role="listbox" tabindex="0"
           aria-label="Seções do site" data-i18n-attr="aria-label:nav.rotulo"></ul>
     </nav>
+
+    <noscript>
+      <div class="largura sem-js">
+        <p>
+          Esta página monta os projetos com JavaScript, que está desligado no seu navegador.
+          Fale comigo por
+          <a href="mailto:ryuki.gui@gmail.com">ryuki.gui@gmail.com</a>,
+          <a href="https://github.com/GuiRyuki">github.com/GuiRyuki</a> ou
+          <a href="https://www.linkedin.com/in/guiryuki">linkedin.com/in/guiryuki</a>.
+        </p>
+        <p lang="en">
+          This page needs JavaScript to show the projects. You can reach me at
+          <a href="mailto:ryuki.gui@gmail.com">ryuki.gui@gmail.com</a>,
+          <a href="https://github.com/GuiRyuki">github.com/GuiRyuki</a> or
+          <a href="https://www.linkedin.com/in/guiryuki">linkedin.com/in/guiryuki</a>.
+        </p>
+      </div>
+    </noscript>
 
     <div id="tela" class="tela">
       <section id="inicio" class="largura apresentacao">

@@ -1,6 +1,6 @@
 // Roda o Lighthouse nos dois modos do site e falha se alguma nota ficar
 // abaixo de 90 ou se o LCP passar de 2 segundos.
-// Uso: node scripts/lighthouse.mjs [url=http://localhost:5173/]
+// Uso: node scripts/lighthouse.mjs [url=http://127.0.0.1:5173/]
 //
 // O Chrome é o Chromium que o Playwright já baixou. A configuração é a padrão
 // do Lighthouse: celular, com a rede 4G e o processador lento simulados.
@@ -19,7 +19,7 @@ import { chromium } from "@playwright/test";
 import puppeteer from "puppeteer-core";
 
 const RAIZ = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const URL_DO_SITE = process.argv[2] ?? "http://localhost:5173/";
+const URL_DO_SITE = process.argv[2] ?? "http://127.0.0.1:5173/";
 const NOTA_MINIMA = 90;
 const LCP_MAXIMO = 2000;
 const CATEGORIAS = ["performance", "accessibility", "best-practices", "seo"];

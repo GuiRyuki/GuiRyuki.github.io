@@ -23,7 +23,10 @@ test.use({ locale: "pt-BR" });
 test("alterna e volta", async ({ page }) => {
   await abrir(page);
   await expect(page.locator(html)).not.toHaveAttribute("data-modo", "jogo");
-  await expect(page.locator(botaoModo)).toHaveAttribute("aria-pressed", "false");
+  // O rótulo já diz para onde o botão leva; ele não é anunciado também como
+  // "pressionado".
+  await expect(page.locator(botaoModo)).not.toHaveAttribute("aria-pressed");
+  await expect(page.locator(botaoModo)).toHaveText(textos.pt["botao.modoJogo"]);
 
   const eventos = await page.evaluateHandle(() => {
     const lista = [];
@@ -33,13 +36,13 @@ test("alterna e volta", async ({ page }) => {
 
   await page.locator(botaoModo).click();
   await expect(page.locator(html)).toHaveAttribute("data-modo", "jogo");
-  await expect(page.locator(botaoModo)).toHaveAttribute("aria-pressed", "true");
   await expect(page.locator(botaoModo)).toHaveText(textos.pt["botao.modoNormal"]);
+  await expect(page.locator(botaoModo)).not.toHaveAttribute("aria-pressed");
 
   await page.locator(botaoModo).click();
   await expect(page.locator(html)).not.toHaveAttribute("data-modo", "jogo");
-  await expect(page.locator(botaoModo)).toHaveAttribute("aria-pressed", "false");
   await expect(page.locator(botaoModo)).toHaveText(textos.pt["botao.modoJogo"]);
+  await expect(page.locator(botaoModo)).not.toHaveAttribute("aria-pressed");
 
   expect(await eventos.jsonValue()).toEqual(["jogo", "sutil"]);
 });
@@ -61,8 +64,8 @@ test("persiste", async ({ page }) => {
   // No modo jogo a página abre na tela inicial; o painel fica escondido.
   await expect(page.locator(".dialogo")).toBeVisible();
   await expect(page.locator(html)).toHaveAttribute("data-modo", "jogo");
-  await expect(page.locator(botaoModo)).toHaveAttribute("aria-pressed", "true");
   await expect(page.locator(botaoModo)).toHaveText(textos.pt["botao.modoNormal"]);
+  await expect(page.locator(botaoModo)).not.toHaveAttribute("aria-pressed");
 });
 
 test("valor desconhecido salvo abre no modo sutil", async ({ page }) => {
