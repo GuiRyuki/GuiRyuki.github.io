@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Guilherme Ryuki</title>
+  <meta name="description" content="Projetos de Guilherme Ryuki, estudante de Análise e Desenvolvimento de Sistemas na FECAP: KFKA, Batman: Gotham Knights e CasaSabor.">
+  <link rel="icon" href="assets/avatar.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&family=Instrument+Sans:wght@400;600&family=Pixelify+Sans:wght@400;600&display=swap">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/sutil.css">
+</head>
+<body>
+  <a class="pular" href="#conteudo" data-i18n="pular.conteudo">Pular para o conteúdo</a>
+
+  <header id="topo">
+    <div class="largura topo-linha">
+      <h1 class="nome"><a href="#inicio" data-perfil="nome">Guilherme Ryuki</a></h1>
+      <nav class="topo-nav" aria-label="Seções do site" data-i18n-attr="aria-label:nav.rotulo">
+        <a href="#projetos" data-i18n="nav.projetos">Projetos</a>
+        <a href="#sobre" data-i18n="nav.sobre">Sobre</a>
+        <a href="#contato" data-i18n="nav.contato">Contato</a>
+      </nav>
+      <div class="topo-botoes">
+        <button type="button" id="botao-idioma" class="botao" data-i18n="botao.idioma">English</button>
+        <button type="button" id="botao-modo" class="botao" data-i18n="botao.modoJogo">▶ Modo jogo</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="conteudo" tabindex="-1">
+    <section id="inicio" class="largura apresentacao">
+      <img class="avatar" data-perfil="avatar" src="assets/avatar.svg" width="112" height="112"
+           alt="Avatar em pixel art do Guilherme" data-i18n-attr="alt:avatar.alt">
+      <div class="dialogo">
+        <p class="dialogo-nome" data-perfil="primeiro-nome">Guilherme</p>
+        <p class="dialogo-texto" data-perfil="dialogo">Oi! Eu sou o Guilherme. Aqui estão os projetos que fiz na faculdade.</p>
+        <span class="dialogo-mais" aria-hidden="true">▼</span>
+      </div>
+    </section>
+
+    <section id="projetos" class="largura secao" aria-labelledby="titulo-projetos">
+      <h2 id="titulo-projetos" data-i18n="nav.projetos">Projetos</h2>
+      <div class="projetos-grade">
+        <ul id="menu-projetos" class="menu-projetos" aria-labelledby="titulo-projetos"></ul>
+        <section id="painel-projeto" class="painel"></section>
+      </div>
+    </section>
+
+    <section id="sobre" class="largura secao" aria-labelledby="titulo-sobre">
+      <h2 id="titulo-sobre" data-i18n="sobre.titulo">Sobre mim</h2>
+      <div class="ficha">
+        <img class="avatar avatar-menor" data-perfil="avatar" src="assets/avatar.svg" width="64" height="64" alt="">
+        <div>
+          <p class="ficha-nome" data-perfil="nome">Guilherme Ryuki</p>
+          <p class="ficha-formacao" data-perfil="formacao">Estudante de Análise e Desenvolvimento de Sistemas na FECAP</p>
+        </div>
+      </div>
+      <p class="sobre-texto" data-perfil="sobre"></p>
+    </section>
+
+    <section id="contato" class="largura secao" aria-labelledby="titulo-contato">
+      <h2 id="titulo-contato" data-i18n="contato.titulo">Contato</h2>
+      <ul class="contatos" data-perfil="contatos"></ul>
+    </section>
+  </main>
+
+  <div id="aviso-tela" class="visualmente-oculto" aria-live="polite"></div>
+
+  <script type="module">
+    import { iniciar } from "./js/main.js";
+    iniciar();
+  </script>
+</body>
+</html>

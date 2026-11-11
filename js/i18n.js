@@ -16,6 +16,13 @@ export const textos = {
     "tela.inicio": "Início",
     "aviso.telaAtual": "Tela atual: {tela}",
     "pular.conteudo": "Pular para o conteúdo",
+    "nav.rotulo": "Seções do site",
+    "avatar.alt": "Avatar em pixel art do Guilherme",
+    "sobre.titulo": "Sobre mim",
+    "contato.curriculo": "Currículo",
+    "contato.baixarCurriculo": "Baixar PDF",
+    "galeria.rotulo": "Imagens do projeto",
+    "galeria.item": "Imagem {n} de {total}",
   },
   en: {
     "nav.projetos": "Projects",
@@ -34,6 +41,13 @@ export const textos = {
     "tela.inicio": "Home",
     "aviso.telaAtual": "Current screen: {tela}",
     "pular.conteudo": "Skip to content",
+    "nav.rotulo": "Site sections",
+    "avatar.alt": "Pixel art avatar of Guilherme",
+    "sobre.titulo": "About me",
+    "contato.curriculo": "Résumé",
+    "contato.baixarCurriculo": "Download PDF",
+    "galeria.rotulo": "Project images",
+    "galeria.item": "Image {n} of {total}",
   },
 };
 

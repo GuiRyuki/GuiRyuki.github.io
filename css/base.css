@@ -1,0 +1,146 @@
+/* Base comum aos dois modos: variáveis, reset, tipografia e utilitários.
+   As cores padrão são as do modo sutil; o modo jogo troca as variáveis. */
+
+:root {
+  --fundo: #f5f3ec;
+  --papel: #ffffff;
+  --texto: #22241f;
+  --secundario: #6b6d63;
+  --borda: #d6d2c4;
+  --fundo-midia: #ebe8dc;
+
+  --fonte-pixel: "Pixelify Sans", "Courier New", monospace;
+  --fonte-texto: "Instrument Sans", system-ui, sans-serif;
+  --fonte-mono: "IBM Plex Mono", ui-monospace, "Courier New", monospace;
+
+  --margem: 16px;
+  --largura-maxima: 1040px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--fundo);
+  color: var(--texto);
+  font-family: var(--fonte-texto);
+  font-size: 1.0625rem;
+  line-height: 1.55;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+  font-family: var(--fonte-pixel);
+  font-weight: 600;
+  line-height: 1.15;
+}
+
+p,
+ul {
+  margin: 0;
+}
+
+ul {
+  padding: 0;
+  list-style: none;
+}
+
+img,
+video {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  color: inherit;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+a:hover {
+  text-decoration-thickness: 2px;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+:focus-visible {
+  outline: 2px solid var(--texto);
+  outline-offset: 3px;
+}
+
+/* O <main> recebe foco apenas pelo link "pular para o conteúdo". */
+main:focus {
+  outline: none;
+}
+
+.largura {
+  width: 100%;
+  max-width: var(--largura-maxima);
+  margin-inline: auto;
+  padding-inline: var(--margem);
+}
+
+.visualmente-oculto {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.pular {
+  position: absolute;
+  left: var(--margem);
+  top: 0;
+  z-index: 10;
+  padding: 10px 14px;
+  background: var(--texto);
+  color: var(--fundo);
+  transform: translateY(-120%);
+}
+
+.pular:focus {
+  transform: none;
+}
+
+.avatar {
+  flex: none;
+  width: 112px;
+  height: 112px;
+  border: 2px solid var(--texto);
+  image-rendering: pixelated;
+}
+
+.avatar-menor {
+  width: 64px;
+  height: 64px;
+}
+
+@media (min-width: 700px) {
+  :root {
+    --margem: 32px;
+  }
+}

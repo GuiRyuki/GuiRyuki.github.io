@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16" shape-rendering="crispEdges">
+  <rect width="16" height="16" fill="#e7e3d5"/>
+  <!-- cabelo -->
+  <rect x="5" y="1" width="6" height="1" fill="#22241f"/>
+  <rect x="4" y="2" width="8" height="2" fill="#22241f"/>
+  <rect x="4" y="4" width="1" height="2" fill="#22241f"/>
+  <rect x="11" y="4" width="1" height="2" fill="#22241f"/>
+  <!-- cabeça e pescoço, sem rosto -->
+  <rect x="5" y="4" width="6" height="3" fill="#c9b99a"/>
+  <rect x="7" y="7" width="2" height="1" fill="#c9b99a"/>
+  <!-- camiseta -->
+  <rect x="4" y="8" width="8" height="5" fill="#3d7a4c"/>
+  <rect x="3" y="8" width="1" height="3" fill="#3d7a4c"/>
+  <rect x="12" y="8" width="1" height="3" fill="#3d7a4c"/>
+  <!-- mãos -->
+  <rect x="3" y="11" width="1" height="1" fill="#c9b99a"/>
+  <rect x="12" y="11" width="1" height="1" fill="#c9b99a"/>
+  <!-- calça e pés -->
+  <rect x="5" y="13" width="6" height="1" fill="#22241f"/>
+  <rect x="5" y="14" width="2" height="2" fill="#22241f"/>
+  <rect x="9" y="14" width="2" height="2" fill="#22241f"/>
+</svg>
