@@ -144,3 +144,30 @@ test("nada de erro no console além das imagens que ainda não existem", async (
   await expect(page.locator(`${painel} h3`)).toBeVisible();
   expect(erros).toEqual([]);
 });
+
+test("estilos do sutil só valem fora do modo jogo", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/");
+  await expect(page.locator(`${painel} h3`)).toBeVisible();
+  const medir = () =>
+    page.evaluate(() => ({
+      sombra: getComputedStyle(document.querySelector(".dialogo")).boxShadow,
+      colunas: getComputedStyle(document.querySelector(".projetos-grade"))
+        .gridTemplateColumns.split(" ").length,
+      bordaTopo: getComputedStyle(document.getElementById("topo")).borderBottomStyle,
+    }));
+
+  const antes = await medir();
+  expect(antes.sombra).not.toBe("none");
+  expect(antes.colunas).toBe(2);
+  expect(antes.bordaTopo).toBe("solid");
+
+  await page.evaluate(() => (document.documentElement.dataset.modo = "jogo"));
+  const noJogo = await medir();
+  expect(noJogo.sombra).toBe("none");
+  expect(noJogo.colunas).toBe(1);
+  expect(noJogo.bordaTopo).toBe("none");
+
+  await page.evaluate(() => delete document.documentElement.dataset.modo);
+  expect(await medir()).toEqual(antes);
+});

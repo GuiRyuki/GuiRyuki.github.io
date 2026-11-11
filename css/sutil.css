@@ -1,13 +1,16 @@
 /* Modo sutil: página clara que rola como documento. O jogo aparece apenas na
    caixa de diálogo, nos cursores ▶ ▼ e na fonte pixelada dos títulos. */
 
+/* Todas as regras são prefixadas para valerem apenas fora do modo jogo, que
+   monta o próprio layout sem precisar desfazer este. */
+
 /* Topo */
 
-#topo {
+html:not([data-modo="jogo"]) #topo {
   border-bottom: 1px solid var(--borda);
 }
 
-.topo-linha {
+html:not([data-modo="jogo"]) .topo-linha {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -15,41 +18,41 @@
   padding-block: 8px;
 }
 
-.nome {
+html:not([data-modo="jogo"]) .nome {
   flex: 1 1 100%;
   font-size: 1.375rem;
 }
 
-.nome a {
+html:not([data-modo="jogo"]) .nome a {
   display: inline-flex;
   align-items: center;
   min-height: 44px;
   text-decoration: none;
 }
 
-.topo-nav {
+html:not([data-modo="jogo"]) .topo-nav {
   display: flex;
   gap: 20px;
   margin-right: auto;
 }
 
-.topo-nav a {
+html:not([data-modo="jogo"]) .topo-nav a {
   display: inline-flex;
   align-items: center;
   min-height: 44px;
   text-decoration: none;
 }
 
-.topo-nav a:hover {
+html:not([data-modo="jogo"]) .topo-nav a:hover {
   text-decoration: underline;
 }
 
-.topo-botoes {
+html:not([data-modo="jogo"]) .topo-botoes {
   display: flex;
   gap: 8px;
 }
 
-.botao {
+html:not([data-modo="jogo"]) .botao {
   min-height: 44px;
   padding: 0 12px;
   border: 1px solid var(--texto);
@@ -58,20 +61,20 @@
   white-space: nowrap;
 }
 
-.botao:hover,
-#botao-modo {
+html:not([data-modo="jogo"]) .botao:hover,
+html:not([data-modo="jogo"]) #botao-modo {
   background: var(--texto);
   color: var(--fundo);
 }
 
-#botao-modo:hover {
+html:not([data-modo="jogo"]) #botao-modo:hover {
   background: var(--fundo);
   color: var(--texto);
 }
 
 /* Apresentação */
 
-.apresentacao {
+html:not([data-modo="jogo"]) .apresentacao {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -79,7 +82,7 @@
   padding-block: 32px;
 }
 
-.dialogo {
+html:not([data-modo="jogo"]) .dialogo {
   position: relative;
   width: 100%;
   max-width: 44rem;
@@ -91,19 +94,19 @@
     inset 0 0 0 4px var(--texto);
 }
 
-.dialogo-nome {
+html:not([data-modo="jogo"]) .dialogo-nome {
   margin-bottom: 4px;
   font-family: var(--fonte-pixel);
   font-size: 0.9375rem;
   color: var(--secundario);
 }
 
-.dialogo-texto {
+html:not([data-modo="jogo"]) .dialogo-texto {
   font-size: clamp(1.1875rem, 0.9rem + 1.1vw, 1.4375rem);
   line-height: 1.4;
 }
 
-.dialogo-mais {
+html:not([data-modo="jogo"]) .dialogo-mais {
   position: absolute;
   right: 14px;
   bottom: 9px;
@@ -112,7 +115,7 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .dialogo-mais {
+  html:not([data-modo="jogo"]) .dialogo-mais {
     animation: piscar 1.1s steps(1) infinite;
   }
 }
@@ -125,11 +128,11 @@
 
 /* Seções */
 
-.secao {
+html:not([data-modo="jogo"]) .secao {
   padding-block: 36px;
 }
 
-.secao > h2 {
+html:not([data-modo="jogo"]) .secao > h2 {
   margin-bottom: 20px;
   padding-top: 20px;
   border-top: 1px solid var(--borda);
@@ -138,13 +141,13 @@
 
 /* Projetos: menu | painel */
 
-.projetos-grade {
+html:not([data-modo="jogo"]) .projetos-grade {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: 28px;
 }
 
-.menu-item {
+html:not([data-modo="jogo"]) .menu-item {
   position: relative;
   display: block;
   width: 100%;
@@ -154,11 +157,11 @@
   text-align: left;
 }
 
-.menu-projetos li:first-child .menu-item {
+html:not([data-modo="jogo"]) .menu-projetos li:first-child .menu-item {
   border-top: 1px solid var(--borda);
 }
 
-.menu-item::before {
+html:not([data-modo="jogo"]) .menu-item::before {
   content: "▶";
   position: absolute;
   left: 2px;
@@ -168,22 +171,22 @@
   opacity: 0;
 }
 
-.menu-item:hover::before {
+html:not([data-modo="jogo"]) .menu-item:hover::before {
   opacity: 0.35;
 }
 
-.menu-item[aria-current="true"]::before {
+html:not([data-modo="jogo"]) .menu-item[aria-current="true"]::before {
   opacity: 1;
 }
 
-.menu-item-titulo {
+html:not([data-modo="jogo"]) .menu-item-titulo {
   display: block;
   font-family: var(--fonte-pixel);
   font-size: 1.25rem;
   line-height: 1.2;
 }
 
-.menu-item-stack {
+html:not([data-modo="jogo"]) .menu-item-stack {
   display: block;
   margin-top: 2px;
   font-family: var(--fonte-mono);
@@ -191,33 +194,33 @@
   color: var(--secundario);
 }
 
-.painel {
+html:not([data-modo="jogo"]) .painel {
   min-width: 0;
 }
 
-.painel-titulo {
+html:not([data-modo="jogo"]) .painel-titulo {
   font-size: clamp(1.75rem, 1.3rem + 1.6vw, 2.25rem);
   overflow-wrap: anywhere;
 }
 
-.painel-dados {
+html:not([data-modo="jogo"]) .painel-dados {
   margin-top: 6px;
   font-family: var(--fonte-mono);
   font-size: 0.875rem;
   color: var(--secundario);
 }
 
-.galeria {
+html:not([data-modo="jogo"]) .galeria {
   margin-top: 18px;
 }
 
-.midia {
+html:not([data-modo="jogo"]) .midia {
   border: 1px solid var(--borda);
   background: var(--fundo-midia);
 }
 
-.midia img,
-.midia video {
+html:not([data-modo="jogo"]) .midia img,
+html:not([data-modo="jogo"]) .midia video {
   width: 100%;
   aspect-ratio: 16 / 9;
   object-fit: cover;
@@ -228,13 +231,13 @@
   color: var(--secundario);
 }
 
-.galeria-controles {
+html:not([data-modo="jogo"]) .galeria-controles {
   display: flex;
   gap: 8px;
   margin-top: 8px;
 }
 
-.galeria-botao {
+html:not([data-modo="jogo"]) .galeria-botao {
   width: 44px;
   height: 44px;
   border: 1px solid var(--texto);
@@ -242,19 +245,19 @@
   font-size: 1rem;
 }
 
-.galeria-botao:hover,
-.galeria-botao[aria-current="true"] {
+html:not([data-modo="jogo"]) .galeria-botao:hover,
+html:not([data-modo="jogo"]) .galeria-botao[aria-current="true"] {
   background: var(--texto);
   color: var(--fundo);
 }
 
-.painel-resumo {
+html:not([data-modo="jogo"]) .painel-resumo {
   max-width: 38rem;
   margin-top: 20px;
   font-size: 1.125rem;
 }
 
-.minha-parte {
+html:not([data-modo="jogo"]) .minha-parte {
   max-width: 38rem;
   margin-top: 20px;
   padding: 14px 18px 16px;
@@ -262,42 +265,42 @@
   border: 2px solid var(--texto);
 }
 
-.minha-parte h4,
-.equipamento h4 {
+html:not([data-modo="jogo"]) .minha-parte h4,
+html:not([data-modo="jogo"]) .equipamento h4 {
   margin-bottom: 6px;
   font-size: 1.0625rem;
 }
 
-.equipamento {
+html:not([data-modo="jogo"]) .equipamento {
   margin-top: 22px;
 }
 
-.stack {
+html:not([data-modo="jogo"]) .stack {
   font-family: var(--fonte-mono);
   font-size: 0.875rem;
 }
 
-.stack li {
+html:not([data-modo="jogo"]) .stack li {
   position: relative;
   padding-left: 18px;
 }
 
-.stack li::before {
+html:not([data-modo="jogo"]) .stack li::before {
   content: "+";
   position: absolute;
   left: 0;
   color: var(--secundario);
 }
 
-.painel-links {
+html:not([data-modo="jogo"]) .painel-links {
   display: flex;
   flex-wrap: wrap;
   gap: 4px 24px;
   margin-top: 16px;
 }
 
-.painel-links a,
-.contatos a {
+html:not([data-modo="jogo"]) .painel-links a,
+html:not([data-modo="jogo"]) .contatos a {
   display: inline-flex;
   align-items: center;
   min-height: 44px;
@@ -307,26 +310,26 @@
 
 /* Sobre */
 
-.ficha {
+html:not([data-modo="jogo"]) .ficha {
   display: flex;
   align-items: center;
   gap: 16px;
 }
 
-.ficha-nome {
+html:not([data-modo="jogo"]) .ficha-nome {
   font-family: var(--fonte-pixel);
   font-size: 1.25rem;
   line-height: 1.2;
 }
 
-.ficha-formacao {
+html:not([data-modo="jogo"]) .ficha-formacao {
   margin-top: 4px;
   font-family: var(--fonte-mono);
   font-size: 0.875rem;
   color: var(--secundario);
 }
 
-.sobre-texto {
+html:not([data-modo="jogo"]) .sobre-texto {
   max-width: 38rem;
   margin-top: 18px;
   font-size: 1.125rem;
@@ -334,15 +337,15 @@
 
 /* Contato */
 
-#contato {
+html:not([data-modo="jogo"]) #contato {
   padding-bottom: 72px;
 }
 
-.contatos {
+html:not([data-modo="jogo"]) .contatos {
   max-width: 34rem;
 }
 
-.contatos li {
+html:not([data-modo="jogo"]) .contatos li {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -350,46 +353,46 @@
   border-bottom: 1px solid var(--borda);
 }
 
-.contatos li:first-child {
+html:not([data-modo="jogo"]) .contatos li:first-child {
   border-top: 1px solid var(--borda);
 }
 
-.contato-rotulo {
+html:not([data-modo="jogo"]) .contato-rotulo {
   flex: 0 0 6rem;
   font-family: var(--fonte-pixel);
 }
 
 /* A partir de 520px o avatar fica ao lado da caixa de diálogo. */
 @media (min-width: 520px) {
-  .apresentacao {
+  html:not([data-modo="jogo"]) .apresentacao {
     flex-direction: row;
     align-items: flex-end;
     gap: 20px;
     padding-block: 48px 28px;
   }
 
-  .dialogo {
+  html:not([data-modo="jogo"]) .dialogo {
     flex: 1;
   }
 }
 
 /* A partir de 700px: topo em uma linha e projetos em duas colunas. */
 @media (min-width: 700px) {
-  .nome {
+  html:not([data-modo="jogo"]) .nome {
     flex: 0 1 auto;
     margin-right: auto;
   }
 
-  .topo-nav {
+  html:not([data-modo="jogo"]) .topo-nav {
     margin-right: 8px;
   }
 
-  .projetos-grade {
+  html:not([data-modo="jogo"]) .projetos-grade {
     grid-template-columns: minmax(0, 5fr) minmax(0, 9fr);
     gap: 48px;
   }
 
-  .menu-projetos {
+  html:not([data-modo="jogo"]) .menu-projetos {
     position: sticky;
     top: 16px;
     align-self: start;
