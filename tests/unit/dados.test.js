@@ -51,7 +51,7 @@ test("ordem inicial", () => {
   );
 });
 
-test("imagens existem no disco", { todo: true }, () => {
+test("imagens existem no disco", () => {
   for (const projeto of projetos) {
     const arquivos = projeto.imagens.map((imagem) => imagem.src);
     if (projeto.destaque) arquivos.push(projeto.destaque.src, projeto.destaque.poster);

@@ -8,6 +8,13 @@ import { textoDe, traduzir } from "./i18n.js";
 const LARGURA_MIDIA = 1280;
 const ALTURA_MIDIA = 720;
 
+// Com o tipo declarado, o navegador que não toca o formato nem baixa o arquivo.
+const TIPOS_DE_VIDEO = { webm: "video/webm", mp4: "video/mp4" };
+
+function movimentoReduzido() {
+  return globalThis.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
+}
+
 function textoPreenchido(valor) {
   return typeof valor === "string" && valor.trim() !== "";
 }
@@ -109,16 +116,37 @@ function criarMidia(midia, idioma) {
   const alt = textoDe(midia.alt, idioma);
   if (midia.tipo === "video") {
     const video = document.createElement("video");
-    video.src = midia.src;
     video.poster = midia.poster;
+    // Os controles ficam sempre à mostra: dá para pausar o vídeo que toca
+    // sozinho e para dar play quando ele começa parado.
     video.controls = true;
+    // O atributo muted (e não só a propriedade) é o que libera o autoplay.
+    video.setAttribute("muted", "");
     video.muted = true;
     video.loop = true;
     video.playsInline = true;
-    video.preload = "none";
+    video.setAttribute("playsinline", ""); // o Firefox não reflete a propriedade
+    // Com movimento reduzido, o vídeo fica parado no poster e nem é baixado.
+    if (movimentoReduzido()) {
+      video.preload = "none";
+    } else {
+      video.autoplay = true;
+    }
     video.width = LARGURA_MIDIA;
     video.height = ALTURA_MIDIA;
     video.setAttribute("aria-label", alt);
+
+    const fonte = document.createElement("source");
+    fonte.src = midia.src;
+    const tipo = TIPOS_DE_VIDEO[midia.src.split(".").pop().toLowerCase()];
+    if (tipo) fonte.type = tipo;
+    // O arquivo só é ligado ao vídeo depois que a página termina de carregar:
+    // assim ele não disputa banda com o conteúdo nem segura o evento load.
+    if (document.readyState === "complete") {
+      video.append(fonte);
+    } else {
+      window.addEventListener("load", () => video.append(fonte), { once: true });
+    }
     return video;
   }
   const imagem = document.createElement("img");

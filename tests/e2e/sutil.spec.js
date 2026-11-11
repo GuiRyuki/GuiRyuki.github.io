@@ -137,11 +137,19 @@ test("estrutura estável para as próximas tarefas", async ({ page }) => {
   }
 });
 
-test("nada de erro no console além das imagens que ainda não existem", async ({ page }) => {
+test("nada de erro no console nem arquivo faltando", async ({ page }) => {
   const erros = [];
   page.on("pageerror", (erro) => erros.push(erro.message));
+  page.on("response", (resposta) => {
+    if (resposta.status() >= 400) erros.push(`${resposta.status()} ${resposta.url()}`);
+  });
   await page.goto("/");
   await expect(page.locator(`${painel} h3`)).toBeVisible();
+  for (const id of ["kfka", "gotham-knights", "casasabor"]) {
+    await page.locator(`[data-projeto="${id}"]`).click();
+    await expect(page.locator(`${painel} .midia > *`)).toHaveCount(1);
+    await page.waitForLoadState("networkidle");
+  }
   expect(erros).toEqual([]);
 });
 
@@ -173,4 +181,69 @@ test("estilos do sutil só valem fora do modo jogo", async ({ page }) => {
 
   await page.evaluate(() => delete document.documentElement.dataset.modo);
   expect(await medir()).toEqual(antes);
+});
+
+test("vídeo de destaque toca sozinho, mudo e em repetição", async ({ page, browserName }) => {
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await page.goto("/");
+  await page.locator('[data-projeto="gotham-knights"]').click();
+  const video = page.locator(`${painel} .midia video`);
+  await expect(video).toHaveAttribute("poster", /gotham-knights-1\.webp$/);
+  await expect(video).toHaveAttribute("autoplay", "");
+  await expect(video).toHaveAttribute("muted", "");
+  await expect(video).toHaveAttribute("loop", "");
+  await expect(video).toHaveAttribute("playsinline", "");
+  await expect(video).toHaveJSProperty("muted", true);
+  const fonte = video.locator("source");
+  await expect(fonte).toHaveAttribute("src", "assets/projetos/gotham-knights.webm");
+  await expect(fonte).toHaveAttribute("type", "video/webm");
+  // O WebKit de teste no Windows vem sem decodificador de WebM; o Safari de
+  // verdade toca. Nos outros dois, confere que o vídeo anda de fato.
+  if (browserName !== "webkit") {
+    await expect
+      .poll(() => video.evaluate((el) => el.currentTime), { timeout: 10000 })
+      .toBeGreaterThan(0);
+  }
+});
+
+test("abrir direto no projeto com vídeo não trava o carregamento", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await page.goto("/#gotham-knights", { waitUntil: "load" });
+  const video = page.locator(`${painel} .midia video`);
+  await expect(video.locator("source")).toHaveCount(1);
+  await expect(video).toHaveAttribute("poster", /gotham-knights-1.webp$/);
+});
+
+test("com movimento reduzido o vídeo fica parado no poster", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/");
+  await page.locator('[data-projeto="gotham-knights"]').click();
+  const video = page.locator(`${painel} .midia video`);
+  await expect(video).toHaveAttribute("poster", /gotham-knights-1\.webp$/);
+  await expect(video).not.toHaveAttribute("autoplay");
+  await expect(video).toHaveAttribute("preload", "none");
+  await expect(video).toHaveJSProperty("paused", true);
+  await expect(video).toHaveJSProperty("currentTime", 0);
+  // Quem quiser assistir ainda consegue dar play.
+  await expect(video).toHaveAttribute("controls", "");
+});
+
+test("prints e poster dos projetos carregam de verdade", async ({ page }) => {
+  await page.goto("/");
+  for (const id of ["kfka", "gotham-knights", "casasabor"]) {
+    await page.locator(`[data-projeto="${id}"]`).click();
+    const botoes = page.locator(`${painel} .galeria-controles button`);
+    for (let i = 0; i < (await botoes.count()); i++) {
+      await botoes.nth(i).click();
+      const imagem = page.locator(`${painel} .midia img`);
+      if ((await imagem.count()) === 0) continue; // vídeo: o poster é conferido abaixo
+      await expect
+        .poll(() => imagem.evaluate((el) => el.complete && el.naturalWidth), {
+          message: `${id}, mídia ${i + 1}`,
+        })
+        .toBeGreaterThan(0);
+    }
+  }
+  const poster = await page.request.get("/assets/projetos/gotham-knights-1.webp");
+  expect(poster.ok()).toBe(true);
 });
