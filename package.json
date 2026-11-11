@@ -1,0 +1,15 @@
+{
+  "name": "guiryuki-portfolio",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test \"tests/unit/**/*.test.js\"",
+    "test:e2e": "playwright test",
+    "servir": "node scripts/servir.mjs 5173"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.56.0",
+    "lighthouse": "^12.8.0"
+  }
+}

@@ -68,7 +68,7 @@ README.md
 
 ---
 
-### Tarefa 1: Base do repositório, servidor e preferências
+### Task 1: Base do repositório, servidor e preferências
 
 **Files:**
 - Create: `package.json`, `.gitignore`, `scripts/servir.mjs`, `playwright.config.js`, `js/preferencias.js`, `tests/unit/preferencias.test.js`, `README.md`
@@ -94,7 +94,7 @@ README.md
 
 ---
 
-### Tarefa 2: Dados e textos bilíngues
+### Task 2: Dados e textos bilíngues
 
 **Files:**
 - Create: `data/projetos.js`, `data/perfil.js`, `js/i18n.js`, `tests/unit/dados.test.js`, `tests/unit/i18n.test.js`
@@ -133,7 +133,7 @@ README.md
 
 ---
 
-### Tarefa 3: Página no modo sutil e painel de projetos
+### Task 3: Página no modo sutil e painel de projetos
 
 **Files:**
 - Create: `index.html`, `css/base.css`, `css/sutil.css`, `js/projetos.js`, `js/main.js`, `assets/avatar.svg`, `tests/e2e/sutil.spec.js`, `tests/unit/projetos.test.js`
@@ -168,7 +168,7 @@ README.md
 
 ---
 
-### Tarefa 4: Troca de idioma
+### Task 4: Troca de idioma
 
 **Files:**
 - Modify: `js/main.js`
@@ -191,7 +191,7 @@ README.md
 
 ---
 
-### Tarefa 5: Modo jogo: visual e alternância
+### Task 5: Modo jogo: visual e alternância
 
 **Files:**
 - Create: `js/modo.js`, `css/jogo.css`, `tests/e2e/modo.spec.js`
@@ -216,7 +216,7 @@ README.md
 
 ---
 
-### Tarefa 6: Modo jogo em tela única
+### Task 6: Modo jogo em tela única
 
 **Files:**
 - Create: `js/telas.js`, `tests/unit/telas.test.js`, `tests/e2e/telas.spec.js`
@@ -249,7 +249,7 @@ README.md
 
 ---
 
-### Tarefa 7: Conteúdo real (prints, vídeo e textos)
+### Task 7: Conteúdo real (prints, vídeo e textos)
 
 **Files:**
 - Create: `scripts/capturar.mjs`, `assets/projetos/*`
@@ -275,7 +275,7 @@ README.md
 
 ---
 
-### Tarefa 8: Critérios de aceite
+### Task 8: Critérios de aceite
 
 **Files:**
 - Create: `tests/e2e/aceite.spec.js`, `scripts/lighthouse.mjs`

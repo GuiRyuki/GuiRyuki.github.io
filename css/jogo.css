@@ -1,0 +1,644 @@
+/* Modo jogo: a página vira a tela de um portátil antigo. Cinco tons de verde,
+   moldura grossa, caixas de borda dupla e cursor ▶. A fonte pixelada fica só
+   em títulos, menus e rótulos; o texto longo continua em Instrument Sans.
+
+   Tela única: a moldura tem o tamanho da janela e não rola. O menu ▶ escolhe
+   a tela, e só a área de conteúdo (#tela) rola por dentro. O js/telas.js
+   esconde com `hidden` as seções que não estão em uso.
+
+   Todas as regras valem apenas com data-modo="jogo" no <html>.
+
+   Pares de texto e fundo usados (contraste WCAG):
+     #16261b em #9bbc8a   7,50:1   texto sobre a tela
+     #16261b em #e6eed6  13,24:1   texto dentro das caixas
+     #e6eed6 em #16261b  13,24:1   item marcado e botões cheios
+   #3d7a4c e #0f1a13 ficam só em bordas e no casco, nunca em texto:
+   #3d7a4c em #e6eed6 dá 4,30:1, abaixo do AA para texto comum. */
+
+html[data-modo="jogo"] {
+  --casco: #0f1a13;
+  --tinta: #16261b;
+  --verde: #3d7a4c;
+  --tela: #9bbc8a;
+  --claro: #e6eed6;
+
+  /* As variáveis da base passam a apontar para a paleta do jogo. */
+  --fundo: var(--tela);
+  --papel: var(--claro);
+  --texto: var(--tinta);
+  --secundario: var(--tinta);
+  --borda: var(--tinta);
+  --fundo-midia: var(--tela);
+
+  --fonte-menu: "Silkscreen", "Pixelify Sans", "Courier New", monospace;
+  --margem: 12px;
+  --folga-tela: 8px;
+  --largura-maxima: 1240px;
+
+  height: 100%;
+  overflow: hidden;
+  background: var(--casco);
+}
+
+/* Várias regras abaixo definem display; o `hidden` precisa ganhar delas. */
+html[data-modo="jogo"] [hidden] {
+  display: none !important;
+}
+
+/* Moldura: o <body> é a tela. Anel verde por fora, borda grossa escura e um
+   fio interno, no mesmo desenho de borda dupla das caixas. */
+html[data-modo="jogo"] body {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 2 * var(--folga-tela));
+  height: calc(100dvh - 2 * var(--folga-tela));
+  overflow: hidden;
+  margin: var(--folga-tela);
+  border: 5px solid var(--tinta);
+  box-shadow:
+    0 0 0 3px var(--verde),
+    inset 0 0 0 3px var(--tela),
+    inset 0 0 0 5px var(--tinta);
+  padding: 5px;
+}
+
+/* Piscada em degraus ao entrar no modo jogo: três saltos em 350ms. A classe
+   só é colocada pelo JS quando o movimento reduzido está desligado. */
+@media (prefers-reduced-motion: no-preference) {
+  html[data-modo="jogo"].transicao-modo body {
+    animation: piscada-modo 350ms steps(1, end);
+  }
+}
+
+@keyframes piscada-modo {
+  0% {
+    opacity: 0;
+  }
+  30% {
+    opacity: 0.35;
+  }
+  65% {
+    opacity: 0.7;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+html[data-modo="jogo"] :focus-visible {
+  outline: 3px solid var(--casco);
+  outline-offset: 2px;
+}
+
+/* Caixa de borda dupla, usada em todo painel com texto. */
+html[data-modo="jogo"] .dialogo,
+html[data-modo="jogo"] .menu-jogo,
+html[data-modo="jogo"] .painel,
+html[data-modo="jogo"] .ficha,
+html[data-modo="jogo"] .sobre-texto,
+html[data-modo="jogo"] .contatos {
+  background: var(--claro);
+  border: 3px solid var(--tinta);
+  box-shadow:
+    inset 0 0 0 2px var(--claro),
+    inset 0 0 0 4px var(--tinta);
+}
+
+/* Topo */
+
+html[data-modo="jogo"] .topo-linha {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 20px;
+  padding-block: 8px 10px;
+}
+
+html[data-modo="jogo"] #topo {
+  flex: none;
+  border-bottom: 3px solid var(--tinta);
+}
+
+html[data-modo="jogo"] .nome {
+  flex: 1 1 100%;
+  font-size: 1.375rem;
+}
+
+html[data-modo="jogo"] .nome a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  text-decoration: none;
+}
+
+/* A navegação do topo dá lugar ao menu ▶ dentro da moldura. */
+html[data-modo="jogo"] .topo-nav {
+  display: none;
+}
+
+html[data-modo="jogo"] .topo-botoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+html[data-modo="jogo"] .botao {
+  min-height: 44px;
+  padding: 0 12px;
+  border: 2px solid var(--tinta);
+  font-family: var(--fonte-menu);
+  font-size: 0.875rem;
+  white-space: nowrap;
+}
+
+html[data-modo="jogo"] .botao:hover,
+html[data-modo="jogo"] #botao-modo {
+  background: var(--tinta);
+  color: var(--claro);
+}
+
+html[data-modo="jogo"] #botao-modo:hover {
+  background: var(--claro);
+  color: var(--tinta);
+}
+
+/* Apresentação */
+
+/* Tela inicial: como numa cena de jogo, a fala fica no pé da tela. */
+html[data-modo="jogo"] .apresentacao {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+  margin-top: auto;
+}
+
+html[data-modo="jogo"] .avatar {
+  border-width: 3px;
+  background: var(--claro);
+}
+
+html[data-modo="jogo"] .dialogo {
+  position: relative;
+  width: 100%;
+  max-width: 44rem;
+  padding: 18px 20px 30px;
+}
+
+html[data-modo="jogo"] .dialogo-nome {
+  margin-bottom: 6px;
+  font-family: var(--fonte-menu);
+  font-size: 0.875rem;
+}
+
+html[data-modo="jogo"] .dialogo-texto {
+  font-size: clamp(1.125rem, 0.9rem + 1vw, 1.375rem);
+  line-height: 1.4;
+}
+
+html[data-modo="jogo"] .dialogo-mais {
+  position: absolute;
+  right: 16px;
+  bottom: 11px;
+  font-size: 0.75rem;
+  line-height: 1;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html[data-modo="jogo"] .dialogo-mais {
+    animation: piscar 1.1s steps(1) infinite;
+  }
+}
+
+/* Tela única: menu | área de conteúdo */
+
+html[data-modo="jogo"] main {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 8px;
+  width: 100%;
+  max-width: var(--largura-maxima);
+  min-height: 0;
+  margin-inline: auto;
+  padding: 10px calc(var(--margem) - 5px) 5px;
+}
+
+html[data-modo="jogo"] .nav-jogo {
+  min-width: 0;
+  padding-inline: 5px;
+}
+
+/* No celular o menu é uma faixa que rola de lado: o item cortado na borda
+   mostra que há mais. */
+html[data-modo="jogo"] .menu-jogo {
+  display: flex;
+  gap: 2px;
+  padding: 6px;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+}
+
+html[data-modo="jogo"] .menu-jogo::-webkit-scrollbar {
+  display: none;
+}
+
+html[data-modo="jogo"] .menu-jogo li {
+  position: relative;
+  flex: none;
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 6px 12px 6px 28px;
+  font-family: var(--fonte-menu);
+  font-size: 0.875rem;
+  line-height: 1.3;
+  white-space: nowrap;
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+html[data-modo="jogo"] .menu-jogo li::before {
+  content: "▶";
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  font-size: 0.75rem;
+  line-height: 1;
+  opacity: 0;
+  transform: translateY(-50%);
+}
+
+/* O cursor ▶ anda com as setas; o fundo cheio marca a tela que está aberta. */
+html[data-modo="jogo"] .menu-jogo li.cursor::before {
+  opacity: 1;
+}
+
+html[data-modo="jogo"] .menu-jogo li[aria-selected="true"] {
+  background: var(--tinta);
+  color: var(--claro);
+}
+
+@media (hover: hover) {
+  html[data-modo="jogo"] .menu-jogo li:hover::before {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html[data-modo="jogo"] .menu-jogo:focus-visible li.cursor::before {
+    animation: piscar 1.1s steps(1) infinite;
+  }
+}
+
+/* Só esta área rola. A folga de 5px deixa o contorno de foco aparecer. */
+html[data-modo="jogo"] .tela {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  padding: 5px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-color: var(--tinta) transparent;
+  scrollbar-width: thin;
+}
+
+html[data-modo="jogo"] .tela > section {
+  flex: none;
+  max-width: none;
+  padding: 0;
+}
+
+html[data-modo="jogo"] .secao > h2 {
+  margin-bottom: 12px;
+  font-size: 1.625rem;
+}
+
+html[data-modo="jogo"] :is(.secao > h2, .painel-titulo, .dialogo-nome):focus-visible {
+  outline-offset: 4px;
+}
+
+/* Projetos: o menu ▶ já lista os projetos, então sobra só o painel. */
+
+html[data-modo="jogo"] #menu-projetos {
+  display: none;
+}
+
+/* O título some da vista mas continua na árvore de acessibilidade, para a
+   ordem h1, h2, h3 não pular um nível (mesma técnica do .visualmente-oculto). */
+html[data-modo="jogo"] #projetos {
+  position: relative;
+}
+
+html[data-modo="jogo"] #titulo-projetos {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+html[data-modo="jogo"] .painel {
+  min-width: 0;
+  padding: 16px 16px 18px;
+}
+
+html[data-modo="jogo"] .painel-titulo {
+  font-size: clamp(1.625rem, 1.3rem + 1.4vw, 2.125rem);
+  overflow-wrap: anywhere;
+}
+
+html[data-modo="jogo"] .painel-dados {
+  margin-top: 6px;
+  font-family: var(--fonte-mono);
+  font-size: 0.875rem;
+}
+
+html[data-modo="jogo"] .galeria {
+  margin-top: 14px;
+}
+
+html[data-modo="jogo"] .midia {
+  border: 3px solid var(--tinta);
+  background: var(--tela);
+}
+
+html[data-modo="jogo"] .midia img,
+html[data-modo="jogo"] .midia video {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  object-position: top;
+  /* Texto alternativo, enquanto a imagem não carrega. */
+  font-family: var(--fonte-mono);
+  font-size: 0.8125rem;
+}
+
+html[data-modo="jogo"] .galeria-controles {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+html[data-modo="jogo"] .galeria-botao {
+  width: 44px;
+  height: 44px;
+  border: 2px solid var(--tinta);
+  font-family: var(--fonte-menu);
+  font-size: 0.875rem;
+}
+
+html[data-modo="jogo"] .galeria-botao:hover,
+html[data-modo="jogo"] .galeria-botao[aria-current="true"] {
+  background: var(--tinta);
+  color: var(--claro);
+}
+
+html[data-modo="jogo"] .painel-resumo {
+  max-width: 38rem;
+  margin-top: 18px;
+  font-size: 1.0625rem;
+}
+
+/* "Minha parte" se destaca pelo fundo da tela, sem outra borda dupla. */
+html[data-modo="jogo"] .minha-parte {
+  max-width: 38rem;
+  margin-top: 18px;
+  padding: 12px 16px 14px;
+  background: var(--tela);
+  border: 3px solid var(--tinta);
+}
+
+html[data-modo="jogo"] .minha-parte h4,
+html[data-modo="jogo"] .equipamento h4 {
+  margin-bottom: 6px;
+  font-family: var(--fonte-menu);
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.3;
+}
+
+html[data-modo="jogo"] .equipamento {
+  margin-top: 20px;
+}
+
+html[data-modo="jogo"] .stack {
+  font-family: var(--fonte-mono);
+  font-size: 0.875rem;
+}
+
+html[data-modo="jogo"] .stack li {
+  position: relative;
+  padding-left: 18px;
+}
+
+html[data-modo="jogo"] .stack li::before {
+  content: "+";
+  position: absolute;
+  left: 0;
+}
+
+html[data-modo="jogo"] .painel-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 24px;
+  margin-top: 14px;
+}
+
+html[data-modo="jogo"] .painel-links a,
+html[data-modo="jogo"] .contatos a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+/* Sobre: a ficha e o texto são duas caixas empilhadas. */
+
+html[data-modo="jogo"] .ficha {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  max-width: 44rem;
+  padding: 14px 16px;
+}
+
+html[data-modo="jogo"] .ficha .avatar {
+  background: var(--tela);
+}
+
+html[data-modo="jogo"] .ficha-nome {
+  font-family: var(--fonte-pixel);
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+html[data-modo="jogo"] .ficha-formacao {
+  margin-top: 4px;
+  font-family: var(--fonte-mono);
+  font-size: 0.875rem;
+}
+
+html[data-modo="jogo"] .sobre-texto {
+  max-width: 44rem;
+  margin-top: 12px;
+  padding: 16px 20px 18px;
+  font-size: 1.0625rem;
+}
+
+/* Contato */
+
+html[data-modo="jogo"] .contatos {
+  max-width: 34rem;
+  padding: 8px 16px;
+}
+
+html[data-modo="jogo"] .contatos li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: 16px;
+}
+
+html[data-modo="jogo"] .contatos li + li {
+  border-top: 2px solid var(--tela);
+}
+
+html[data-modo="jogo"] .contato-rotulo {
+  flex: 0 0 6.5rem;
+  font-family: var(--fonte-menu);
+  font-size: 0.875rem;
+}
+
+/* A partir de 520px o topo cabe em uma linha e o avatar fica ao lado da
+   caixa de diálogo. */
+@media (min-width: 520px) {
+  html[data-modo="jogo"] .nome {
+    flex: 0 1 auto;
+  }
+
+  html[data-modo="jogo"] .topo-botoes {
+    margin-left: auto;
+  }
+
+  html[data-modo="jogo"] .apresentacao {
+    flex-direction: row;
+    align-items: flex-end;
+    gap: 16px;
+  }
+
+  html[data-modo="jogo"] .dialogo {
+    flex: 1;
+  }
+}
+
+/* A partir de 700px: mais folga e o menu vira uma coluna ao lado do conteúdo. */
+@media (min-width: 700px) {
+  html[data-modo="jogo"] {
+    --margem: 28px;
+    --folga-tela: 16px;
+  }
+
+  html[data-modo="jogo"] main {
+    grid-template-columns: minmax(11rem, 15rem) minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
+    gap: 6px;
+    padding-block: 15px 11px;
+  }
+
+  html[data-modo="jogo"] .nav-jogo {
+    padding: 5px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--tinta) transparent;
+  }
+
+  html[data-modo="jogo"] .menu-jogo {
+    display: block;
+    padding: 8px;
+    overflow: visible;
+  }
+
+  html[data-modo="jogo"] .menu-jogo li {
+    padding: 9px 10px 9px 30px;
+    font-size: 0.9375rem;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  /* Um respiro separa os projetos de Sobre mim e Contato. */
+  html[data-modo="jogo"] .menu-jogo li[data-tela="sobre"] {
+    margin-top: 10px;
+  }
+
+  html[data-modo="jogo"] .painel {
+    padding: 20px 24px 24px;
+  }
+}
+
+/* Em telas largas a galeria fica ao lado do texto, e o projeto cabe quase
+   inteiro na moldura. */
+@media (min-width: 1100px) {
+  html[data-modo="jogo"] .painel {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: repeat(6, auto) 1fr;
+    column-gap: 24px;
+  }
+
+  html[data-modo="jogo"] .painel > * {
+    grid-column: 2;
+  }
+
+  html[data-modo="jogo"] .painel > .painel-titulo,
+  html[data-modo="jogo"] .painel > .painel-dados {
+    grid-column: 1 / -1;
+  }
+
+  html[data-modo="jogo"] .painel > .galeria {
+    grid-column: 1;
+    grid-row: 3 / -1;
+    margin-top: 18px;
+  }
+}
+
+/* Janela baixa (celular deitado, ou zoom de 400% num monitor comum): a área
+   de conteúdo ficaria com poucos pixels de altura. A moldura deixa de ter o
+   tamanho da janela, cresce com o conteúdo, e quem rola é a página inteira. */
+@media (max-height: 480px) {
+  html[data-modo="jogo"] {
+    height: auto;
+    overflow: visible;
+  }
+
+  html[data-modo="jogo"] body {
+    height: auto;
+    min-height: calc(100vh - 2 * var(--folga-tela));
+    min-height: calc(100dvh - 2 * var(--folga-tela));
+    overflow: visible;
+  }
+
+  html[data-modo="jogo"] .tela {
+    overflow: visible;
+  }
+}
+
+/* Com o menu em coluna, ele acompanha a rolagem da página. */
+@media (max-height: 480px) and (min-width: 700px) {
+  html[data-modo="jogo"] .nav-jogo {
+    position: sticky;
+    top: 0;
+    align-self: start;
+    max-height: 100vh;
+    max-height: 100dvh;
+  }
+}
