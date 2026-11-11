@@ -124,6 +124,15 @@ A ordem dos projetos segue o arquivo de dados. Ordem inicial: KFKA, Batman: Goth
 - Microinterações (animação do cursor ▶, texto da caixa de diálogo aparecendo letra por letra), sempre respeitando `prefers-reduced-motion` e nunca atrasando o acesso ao conteúdo.
 - Como apresentar várias imagens por projeto (miniaturas, setas etc.).
 
-## 9. Referências visuais
+## 9. Critérios de aceite (o site só está pronto quando todos passam)
+
+1. **Desempenho:** a página carrega em menos de 2s numa conexão 4G simulada, com nota **90+ no Lighthouse** em Desempenho, Acessibilidade, Boas práticas e SEO, **nos dois modos**.
+2. **Compatibilidade:** funciona nas versões atuais do Chrome, Firefox, Edge e Safari, em larguras de **360px** até monitores largos, **sem rolagem horizontal**.
+3. **Acessibilidade:** o site inteiro (incluindo a troca de modo, a de idioma e o menu do modo jogo) funciona **só com teclado**, com foco visível, contraste **AA** nos dois modos e `alt` em PT e EN em todas as imagens.
+4. **Manutenção:** um projeto novo, adicionado **só no arquivo de dados**, aparece corretamente nos dois modos e nos dois idiomas, sem tocar em nenhum outro arquivo. Isso precisa ser verificado com um projeto de teste, que é removido depois.
+5. **Conteúdo e idioma:** nenhum texto fica faltando na tradução, e trocar PT/EN troca **tudo** que é visível (incluindo `alt`, `title` e `<html lang>`), sem recarregar a página.
+6. **Comportamentos básicos:** o site abre no modo sutil na primeira visita. Modo e idioma escolhidos sobrevivem a um recarregamento. Um link vazio (`online`, `repo`) não aparece. Uma âncora (`#sobre` etc.) abre a seção certa nos dois modos.
+
+## 10. Referências visuais
 
 Os mockups da conversa estão em `docs/superpowers/mockups/`. A referência principal é `tema-rpg.html`, com as opções "sutil" e "imersivo", e o site usa as duas, com alternância entre elas. Os mockups são fragmentos e foram feitos para serem vistos dentro do companion visual. `layout-home.html` mostra uma etapa anterior, com estruturas sem tema que foram superadas pela direção RPG.
